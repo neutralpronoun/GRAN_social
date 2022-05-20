@@ -1,7 +1,7 @@
 
-# GRAN
+# GRAN - Alex Davies
 
-This is the official PyTorch implementation of [Efficient Graph Generation with Graph Recurrent Attention Networks](https://arxiv.org/abs/1910.00760) as described in the following NeurIPS 2019 paper:
+This is (a fork of) the official PyTorch implementation of [Efficient Graph Generation with Graph Recurrent Attention Networks](https://arxiv.org/abs/1910.00760) as described in the following NeurIPS 2019 paper:
 
 ```
 @inproceedings{liao2019gran,
