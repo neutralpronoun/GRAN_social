@@ -4,7 +4,7 @@ exp_dir: exp/GRAN
 runner: GranRunner
 use_horovod: false
 use_gpu: true
-device: cpu
+device: mps
 gpus: [0]
 seed: 1234
 dataset:
@@ -41,10 +41,10 @@ train:
   lr_decay_epoch: [100000000] # no decay
   num_workers: 0
   max_epoch: 3000
-  batch_size: 1
-  display_iter: 10
-  snapshot_epoch: 100
-  valid_epoch: 50
+  batch_size: 25
+  display_iter: 5
+  snapshot_epoch: 10
+  valid_epoch: 10
   lr: 1.0e-4
   wd: 0.0e-4
   momentum: 0.9

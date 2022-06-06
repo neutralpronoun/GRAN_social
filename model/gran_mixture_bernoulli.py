@@ -404,6 +404,12 @@ class GRANMixtureBernoulli(nn.Module):
         loss                        if training
         list of adjacency matrices  else
     """
+    # print("\n" + "="*30)
+    # print(list(input_dict[0].keys()))
+    # print("\n" + "=" * 30)
+
+    input_dict = input_dict[0]
+
     is_sampling = input_dict[
         'is_sampling'] if 'is_sampling' in input_dict else False
     batch_size = input_dict[

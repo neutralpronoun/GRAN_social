@@ -170,8 +170,10 @@ class GranRunner(object):
     # create models
     model = eval(self.model_conf.name)(self.config)
 
-    if self.use_gpu:
-      model = DataParallel(model, device_ids=self.gpus).to(self.device)
+    print(model)
+
+    # if self.use_gpu:
+    #   model = DataParallel(model, device_ids=self.gpus).to(self.device)
 
     # create optimizer
     params = filter(lambda p: p.requires_grad, model.parameters())
@@ -201,7 +203,7 @@ class GranRunner(object):
       model_file = os.path.join(self.train_conf.resume_dir,
                                 self.train_conf.resume_model)
       load_model(
-          model.module if self.use_gpu else model,
+          model, #model.module if self.use_gpu else
           model_file,
           self.device,
           optimizer=optimizer,
@@ -234,14 +236,14 @@ class GranRunner(object):
           if self.use_gpu:
             for dd, gpu_id in enumerate(self.gpus):
               data = {}
-              data['adj'] = batch_data[dd][ff]['adj'].pin_memory().to(gpu_id, non_blocking=True)          
-              data['edges'] = batch_data[dd][ff]['edges'].pin_memory().to(gpu_id, non_blocking=True)
-              data['node_idx_gnn'] = batch_data[dd][ff]['node_idx_gnn'].pin_memory().to(gpu_id, non_blocking=True)
-              data['node_idx_feat'] = batch_data[dd][ff]['node_idx_feat'].pin_memory().to(gpu_id, non_blocking=True)
-              data['label'] = batch_data[dd][ff]['label'].pin_memory().to(gpu_id, non_blocking=True)
-              data['att_idx'] = batch_data[dd][ff]['att_idx'].pin_memory().to(gpu_id, non_blocking=True)
-              data['subgraph_idx'] = batch_data[dd][ff]['subgraph_idx'].pin_memory().to(gpu_id, non_blocking=True)
-              data['subgraph_idx_base'] = batch_data[dd][ff]['subgraph_idx_base'].pin_memory().to(gpu_id, non_blocking=True)
+              data['adj'] = batch_data[dd][ff]['adj']#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['edges'] = batch_data[dd][ff]['edges']#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['node_idx_gnn'] = batch_data[dd][ff]['node_idx_gnn']#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['node_idx_feat'] = batch_data[dd][ff]['node_idx_feat']#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['label'] = batch_data[dd][ff]['label']#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['att_idx'] = batch_data[dd][ff]['att_idx']#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['subgraph_idx'] = batch_data[dd][ff]['subgraph_idx']#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['subgraph_idx_base'] = batch_data[dd][ff]['subgraph_idx_base']#.pin_memory()#.to(gpu_id, non_blocking=True)
               batch_fwd.append((data,))
 
           if batch_fwd:
@@ -254,8 +256,6 @@ class GranRunner(object):
         # clip_grad_norm_(model.parameters(), 5.0e-0)
         optimizer.step()
         avg_train_loss /= float(self.dataset_conf.num_fwd_pass)
-
-        print(repr(avg_train_loss))
         
         # reduce
         train_loss = avg_train_loss#float(avg_train_loss.data.cpu().numpy())
@@ -271,7 +271,7 @@ class GranRunner(object):
       # snapshot model
       if (epoch + 1) % self.train_conf.snapshot_epoch == 0:
         logger.info("Saving Snapshot @ epoch {:04d}".format(epoch + 1))
-        snapshot(model.module if self.use_gpu else model, optimizer, self.config, epoch + 1, scheduler=lr_scheduler)
+        snapshot(model, optimizer, self.config, epoch + 1, scheduler=lr_scheduler)  #model.module if self.use_gpu else
     
     pickle.dump(results, open(os.path.join(self.config.save_dir, 'train_stats.p'), 'wb'))
     self.writer.close()
@@ -290,6 +290,8 @@ class GranRunner(object):
       model = eval(self.model_conf.name)(self.config)
       model_file = os.path.join(self.config.save_dir, self.test_conf.test_model_name)
       load_model(model, model_file, self.device)
+
+      print(load_model)
 
       if self.use_gpu:
         model = nn.DataParallel(model, device_ids=self.gpus).to(self.device)
