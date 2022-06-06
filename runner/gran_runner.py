@@ -254,9 +254,12 @@ class GranRunner(object):
         # clip_grad_norm_(model.parameters(), 5.0e-0)
         optimizer.step()
         avg_train_loss /= float(self.dataset_conf.num_fwd_pass)
+
+        print(repr(avg_train_loss))
         
         # reduce
-        train_loss = float(avg_train_loss.data.cpu().numpy())
+        train_loss = avg_train_loss#float(avg_train_loss.data.cpu().numpy())
+        #train_loss = float(avg_train_loss.data.cpu().numpy())
         
         self.writer.add_scalar('train_loss', train_loss, iter_count)
         results['train_loss'] += [train_loss]

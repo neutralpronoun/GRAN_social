@@ -18,7 +18,7 @@ def main():
   np.random.seed(config.seed)
   torch.manual_seed(config.seed)
   torch.cuda.manual_seed_all(config.seed)
-  config.use_gpu = config.use_gpu and torch.cuda.is_available()
+  config.use_gpu = config.use_gpu# and torch.cuda.is_available()
 
   # log info
   log_file = os.path.join(config.save_dir, "log_exp_{}.txt".format(config.run_id))

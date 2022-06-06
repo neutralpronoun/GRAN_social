@@ -63,5 +63,5 @@ test:
   num_vis: 20
   vis_num_row: 3 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
-  test_model_dir: snapshot_model
-  test_model_name: gran_DB.pth
+  test_model_dir: exp/GRAN/GRANMixtureBernoulli_FIRSTMM_DB_2022-Jun-05-12-57-20_30149
+  test_model_name: model_snapshot_0020000.pth

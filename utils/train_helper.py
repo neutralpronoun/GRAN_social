@@ -36,8 +36,8 @@ def snapshot(model, optimizer, config, step, gpus=[0], tag=None, scheduler=None)
                           "model_snapshot_{:07d}.pth".format(step)))
   # update config file's test path
   save_name = os.path.join(config.save_dir, 'config.yaml')
-  # config_save = edict(yaml.load(open(save_name, 'r'), Loader=yaml.FullLoader))
-  config_save = edict(yaml.load(open(save_name, 'r')))
+  config_save = edict(yaml.load(open(save_name, 'r'), Loader=yaml.FullLoader))
+  #config_save = edict(yaml.load(open(save_name, 'r')))
   config_save.test.test_model_dir = config.save_dir
   config_save.test.test_model_name = "model_snapshot_{}.pth".format(
           tag) if tag is not None else "model_snapshot_{:07d}.pth".format(step)
@@ -45,7 +45,8 @@ def snapshot(model, optimizer, config, step, gpus=[0], tag=None, scheduler=None)
 
 
 def load_model(model, file_name, device, optimizer=None, scheduler=None):
-  model_snapshot = torch.load(file_name, map_location=device)  
+  model_snapshot = torch.load(file_name, map_location=device)
+
   model.load_state_dict(model_snapshot["model"])
   if optimizer is not None:
     optimizer.load_state_dict(model_snapshot["optimizer"])

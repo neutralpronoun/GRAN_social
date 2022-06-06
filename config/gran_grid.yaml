@@ -4,7 +4,7 @@ exp_dir: exp/GRAN
 runner: GranRunner
 use_horovod: false
 use_gpu: true
-device: mps
+device: cpu
 gpus: [0]
 seed: 1234
 dataset:
