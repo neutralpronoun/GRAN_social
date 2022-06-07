@@ -275,11 +275,11 @@ class GRANMixtureBernoulli(nn.Module):
         else:
           N_pad = N
 
-        A = torch.zeros(B, N_pad, N_pad).to(self.device)
+        A = torch.zeros(B, N_pad, N_pad)#.to(self.device)
         dim_input = self.embedding_dim if self.dimension_reduce else self.max_num_nodes
 
         ### cache node state for speed up
-        node_state = torch.zeros(B, N_pad, dim_input).to(self.device)
+        node_state = torch.zeros(B, N_pad, dim_input)#.to(self.device)
 
         for ii in range(0, N_pad, S):
           # for ii in range(0, 3530, S):
@@ -317,22 +317,22 @@ class GRANMixtureBernoulli(nn.Module):
           edges = torch.cat(edges, dim=1).t()
 
           att_idx = torch.cat([torch.zeros(ii).long(),
-                               torch.arange(1, K + 1)]).to(self.device)
+                               torch.arange(1, K + 1)])#.to(self.device)
           att_idx = att_idx.view(1, -1).expand(B, -1).contiguous().view(-1, 1)
 
           if self.has_rand_feat:
             # create random feature
             att_edge_feat = torch.zeros(edges.shape[0],
-                                        2 * self.att_edge_dim).to(self.device)
+                                        2 * self.att_edge_dim)#.to(self.device)
             idx_new_node = (att_idx[[edges[:, 0]]] >
                             0).long() + (att_idx[[edges[:, 1]]] > 0).long()
             idx_new_node = idx_new_node.byte().squeeze()
             att_edge_feat[idx_new_node, :] = torch.randn(
-                idx_new_node.long().sum(), att_edge_feat.shape[1]).to(self.device)
+                idx_new_node.long().sum(), att_edge_feat.shape[1])#.to(self.device)
           else:
             # create one-hot feature
             att_edge_feat = torch.zeros(edges.shape[0],
-                                        2 * self.att_edge_dim).to(self.device)
+                                        2 * self.att_edge_dim)#.to(self.device)
             att_edge_feat = att_edge_feat.scatter(1, att_idx[[edges[:, 0]]], 1)
             att_edge_feat = att_edge_feat.scatter(
                 1, att_idx[[edges[:, 1]]] + self.att_edge_dim, 1)
@@ -342,8 +342,8 @@ class GRANMixtureBernoulli(nn.Module):
           node_state_out = node_state_out.view(B, jj, -1)
 
           idx_row, idx_col = np.meshgrid(np.arange(ii, jj), np.arange(jj))
-          idx_row = torch.from_numpy(idx_row.reshape(-1)).long().to(self.device)
-          idx_col = torch.from_numpy(idx_col.reshape(-1)).long().to(self.device)
+          idx_row = torch.from_numpy(idx_row.reshape(-1)).long()#.to(self.device)
+          idx_col = torch.from_numpy(idx_col.reshape(-1)).long()#.to(self.device)
 
           diff = node_state_out[:,idx_row, :] - node_state_out[:,idx_col, :]  # B X (ii+K)K X H
           diff = diff.view(-1, node_state.shape[2])
@@ -408,7 +408,9 @@ class GRANMixtureBernoulli(nn.Module):
     # print(list(input_dict[0].keys()))
     # print("\n" + "=" * 30)
 
-    input_dict = input_dict[0]
+
+    if type(input_dict) == tuple:
+        input_dict = input_dict[0]
 
     is_sampling = input_dict[
         'is_sampling'] if 'is_sampling' in input_dict else False
@@ -454,7 +456,7 @@ class GRANMixtureBernoulli(nn.Module):
       A = self._sampling(batch_size)
 
       ### sample number of nodes
-      num_nodes_pmf = torch.from_numpy(num_nodes_pmf).to(self.device)
+      num_nodes_pmf = torch.from_numpy(num_nodes_pmf)#.to(self.device)
       num_nodes = torch.multinomial(
           num_nodes_pmf, batch_size, replacement=True) + 1  # shape B X 1
 
@@ -497,15 +499,15 @@ def mixture_bernoulli_loss(label, log_theta, log_alpha, adj_loss_func,
   adj_loss = torch.stack(
       [adj_loss_func(log_theta[:, kk], label) for kk in range(K)], dim=1)
 
-  const = torch.zeros(num_subgraph).to(label.device) # S
+  const = torch.zeros(num_subgraph)#.to(label.device) # S
   const = const.scatter_add(0, subgraph_idx,
                             torch.ones_like(subgraph_idx).float())
 
-  reduce_adj_loss = torch.zeros(num_subgraph, K).to(label.device)
+  reduce_adj_loss = torch.zeros(num_subgraph, K)#.to(label.device)
   reduce_adj_loss = reduce_adj_loss.scatter_add(
       0, subgraph_idx.unsqueeze(1).expand(-1, K), adj_loss)
 
-  reduce_log_alpha = torch.zeros(num_subgraph, K).to(label.device)
+  reduce_log_alpha = torch.zeros(num_subgraph, K)#.to(label.device)
   reduce_log_alpha = reduce_log_alpha.scatter_add(
       0, subgraph_idx.unsqueeze(1).expand(-1, K), log_alpha)
   reduce_log_alpha = reduce_log_alpha / const.view(-1, 1)
@@ -514,9 +516,9 @@ def mixture_bernoulli_loss(label, log_theta, log_alpha, adj_loss_func,
   log_prob = -reduce_adj_loss + reduce_log_alpha
   log_prob = torch.logsumexp(log_prob, dim=1) # S, K
 
-  bc_log_prob = torch.zeros([B*C]).to(label.device) # B*C
-  bc_idx = torch.arange(B*C).to(label.device) # B*C
-  bc_const = torch.zeros(B*C).to(label.device)
+  bc_log_prob = torch.zeros([B*C])#.to(label.device) # B*C
+  bc_idx = torch.arange(B*C)#.to(label.device) # B*C
+  bc_const = torch.zeros(B*C)#.to(label.device)
   bc_size = (subgraph_idx_base[1:] - subgraph_idx_base[:-1]) // C # B
   bc_size = torch.repeat_interleave(bc_size, C) # B*C
   bc_idx = torch.repeat_interleave(bc_idx, bc_size) # S

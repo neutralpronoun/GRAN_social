@@ -52,6 +52,7 @@ def compute_edge_ratio(G_list):
     num_edges += gg.number_of_edges()
     num_edges_max += num_nodes**2
 
+
   ratio = (num_edges_max - num_edges) / num_edges
   return ratio
 
@@ -109,7 +110,10 @@ class GranRunner(object):
 
     ### load graphs
     self.graphs = create_graphs(config.dataset.name, data_dir=config.dataset.data_path)
-    
+
+
+    # print(self.graphs)
+
     self.train_ratio = config.dataset.train_ratio
     self.dev_ratio = config.dataset.dev_ratio
     self.block_size = config.model.block_size
@@ -281,7 +285,7 @@ class GranRunner(object):
   def test(self):
     self.config.save_dir = self.test_conf.test_model_dir
 
-    ### Compute Erdos-Renyi baseline    
+    ### Compute Erdos-Renyi baseline
     if self.config.test.is_test_ER:
       p_ER = sum([aa.number_of_edges() for aa in self.graphs_train]) / sum([aa.number_of_nodes() ** 2 for aa in self.graphs_train])      
       graphs_gen = [nx.fast_gnp_random_graph(self.max_num_nodes, p_ER, seed=ii) for ii in range(self.num_test_gen)]
@@ -291,10 +295,9 @@ class GranRunner(object):
       model_file = os.path.join(self.config.save_dir, self.test_conf.test_model_name)
       load_model(model, model_file, self.device)
 
-      print(load_model)
 
-      if self.use_gpu:
-        model = nn.DataParallel(model, device_ids=self.gpus).to(self.device)
+      # if self.use_gpu:
+      #   model = nn.DataParallel(model, device_ids=self.gpus).to(self.device)
 
       model.eval()
 

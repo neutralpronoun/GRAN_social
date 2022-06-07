@@ -9,12 +9,12 @@ gpus: [0]
 seed: 1234
 dataset:
   loader_name: GRANData
-  name: grid
+  name: social
   data_path: data/
   node_order: DFS # k_core/BFS/degree_decent
   train_ratio: 0.8
   dev_ratio: 0.2
-  num_subgraph_batch: 50 # number of subgraphs per mini-batch
+  num_subgraph_batch: 5 # number of subgraphs per mini-batch
   num_fwd_pass: 1
   has_node_feat: false
   is_save_split: false
@@ -24,13 +24,13 @@ model:
   name: GRANMixtureBernoulli
   num_mix_component: 20
   is_sym: true
-  block_size: 1
+  block_size: 2
   sample_stride: 1
-  max_num_nodes: 361
+  max_num_nodes: 850
   hidden_dim: 128
   embedding_dim: 128
   num_GNN_layers: 7
-  num_GNN_prop: 1
+  num_GNN_prop: 2
   num_canonical_order: 1
   dimension_reduce: true
   has_attention: true
@@ -41,7 +41,7 @@ train:
   lr_decay_epoch: [100000000] # no decay
   num_workers: 0
   max_epoch: 3000
-  batch_size: 25
+  batch_size: 5
   display_iter: 5
   snapshot_epoch: 10
   valid_epoch: 10
@@ -54,14 +54,14 @@ train:
   resume_dir: # exp/GRAN/your_exp_folder
   resume_model: model_snapshot_0005000.pth
 test:
-  batch_size: 20
+  batch_size: 9
   num_workers: 0
-  num_test_gen: 20 # number of generated samples
+  num_test_gen: 9 # number of generated samples
   is_vis: true
-  is_single_plot: false # visualize `num_vis` samples in a single image
+  is_single_plot: true # visualize `num_vis` samples in a single image
   is_test_ER: false # test Erdos-Renyi baseline
-  num_vis: 20
-  vis_num_row: 5 # visualize `num_vis` samples in `vis_num_row` rows
+  num_vis: 9
+  vis_num_row: 3 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
-  test_model_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_grid_2022-Jun-06-15-02-01_36906/
-  test_model_name: model_snapshot_0000030.pth
+  test_model_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-06-21-28-08_40672/
+  test_model_name: model_snapshot_0001810.pth

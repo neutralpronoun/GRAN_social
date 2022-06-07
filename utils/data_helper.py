@@ -197,6 +197,20 @@ def create_graphs(graph_type, data_dir='data', noise=10.0, seed=1234):
         node_attributes=False,
         graph_labels=True)
     # args.max_prev_node = 230
+
+  elif graph_type == "social":
+    graphs = graph_load_batch(
+        data_dir,
+        min_num_nodes=1,
+        max_num_nodes=850,
+        name='social',
+        node_attributes=False,
+        graph_labels=True)
+    # args.max_prev_node = 230
+    # print(graphs)
+    print(graphs[0])
+
+
   elif graph_type == 'FIRSTMM_DB':
     graphs = graph_load_batch(
         data_dir,

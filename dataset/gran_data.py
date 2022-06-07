@@ -309,6 +309,8 @@ class GRANData(object):
       data['num_nodes_gt'] = torch.from_numpy(
           np.array([bb['num_nodes'] for bb in batch_pass])).long().view(-1)
 
+
+
       data['adj'] = torch.from_numpy(
           np.stack(
               [
