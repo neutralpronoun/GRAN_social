@@ -297,7 +297,6 @@ class GRANData(object):
       batch_pass = []
       for bb in batch:
         batch_pass += [bb[ff]]
-
       pad_size = [self.max_num_nodes - bb['num_nodes'] for bb in batch_pass]
       subgraph_idx_base = np.array([0] +
                                    [bb['subgraph_count'] for bb in batch_pass])

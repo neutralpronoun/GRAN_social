@@ -202,7 +202,7 @@ def create_graphs(graph_type, data_dir='data', noise=10.0, seed=1234):
     graphs = graph_load_batch(
         data_dir,
         min_num_nodes=1,
-        max_num_nodes=850,
+        max_num_nodes=200,
         name='social',
         node_attributes=False,
         graph_labels=True)

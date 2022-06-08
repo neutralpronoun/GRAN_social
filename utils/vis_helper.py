@@ -8,7 +8,7 @@ def draw_graph_list(G_list,
                     row,
                     col,
                     fname='exp/gen_graph.png',
-                    layout='spring',
+                    layout='spectral',
                     is_single=False,
                     k=1,
                     node_size=55,
@@ -16,6 +16,13 @@ def draw_graph_list(G_list,
                     width=1.3):
   plt.switch_backend('agg')
   for i, G in enumerate(G_list):
+    G = nx.Graph(G)
+
+    for n in list(G.nodes()):
+        if len(list(G.edges(n))) == 0:
+            G.remove_node(n)
+
+
     plt.subplot(row, col, i + 1)
     plt.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=0, hspace=0)
     # plt.axis("off")
