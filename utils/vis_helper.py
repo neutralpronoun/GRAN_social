@@ -8,7 +8,7 @@ def draw_graph_list(G_list,
                     row,
                     col,
                     fname='exp/gen_graph.png',
-                    layout='spectral',
+                    layout='spring',
                     is_single=False,
                     k=1,
                     node_size=55,
@@ -32,8 +32,10 @@ def draw_graph_list(G_list,
     plt.yticks([])
 
     if layout == 'spring':
-      pos = nx.spring_layout(
-          G, k=k / np.sqrt(G.number_of_nodes()), iterations=100)
+
+      pos = nx.nx_pydot.graphviz_layout(G, prog="sfdp")
+      # pos = nx.spring_layout(
+      #     G, k=k / np.sqrt(G.number_of_nodes()), iterations=100)
     elif layout == 'spectral':
       pos = nx.spectral_layout(G)
 

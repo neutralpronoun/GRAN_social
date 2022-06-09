@@ -171,10 +171,13 @@ class GranRunner(object):
         collate_fn=train_dataset.collate_fn,
         drop_last=False)
 
+
     # create models
     model = eval(self.model_conf.name)(self.config)
 
-    print(model)
+    if self.device == "mps":
+      self.device = torch.device("mps")
+      model = model.to(self.device)
 
     # if self.use_gpu:
     #   model = DataParallel(model, device_ids=self.gpus).to(self.device)
@@ -238,20 +241,23 @@ class GranRunner(object):
           batch_fwd = []
           
           if self.use_gpu:
+
             for dd, gpu_id in enumerate(self.gpus):
               data = {}
-              data['adj'] = batch_data[dd][ff]['adj']#.pin_memory()#.to(gpu_id, non_blocking=True)
-              data['edges'] = batch_data[dd][ff]['edges']#.pin_memory()#.to(gpu_id, non_blocking=True)
-              data['node_idx_gnn'] = batch_data[dd][ff]['node_idx_gnn']#.pin_memory()#.to(gpu_id, non_blocking=True)
-              data['node_idx_feat'] = batch_data[dd][ff]['node_idx_feat']#.pin_memory()#.to(gpu_id, non_blocking=True)
-              data['label'] = batch_data[dd][ff]['label']#.pin_memory()#.to(gpu_id, non_blocking=True)
-              data['att_idx'] = batch_data[dd][ff]['att_idx']#.pin_memory()#.to(gpu_id, non_blocking=True)
-              data['subgraph_idx'] = batch_data[dd][ff]['subgraph_idx']#.pin_memory()#.to(gpu_id, non_blocking=True)
-              data['subgraph_idx_base'] = batch_data[dd][ff]['subgraph_idx_base']#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['adj'] = batch_data[dd][ff]['adj'].to(self.device)#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['edges'] = batch_data[dd][ff]['edges'].to(self.device)#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['node_idx_gnn'] = batch_data[dd][ff]['node_idx_gnn'].to(self.device)#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['node_idx_feat'] = batch_data[dd][ff]['node_idx_feat'].to(self.device)#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['label'] = batch_data[dd][ff]['label'].to(self.device)#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['att_idx'] = batch_data[dd][ff]['att_idx'].to(self.device)#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['subgraph_idx'] = batch_data[dd][ff]['subgraph_idx'].to(self.device)#.pin_memory()#.to(gpu_id, non_blocking=True)
+              data['subgraph_idx_base'] = batch_data[dd][ff]['subgraph_idx_base'].to(self.device)#.pin_memory()#.to(gpu_id, non_blocking=True)
               batch_fwd.append((data,))
 
+
           if batch_fwd:
-            train_loss = model(*batch_fwd).mean()              
+
+            train_loss = model(*batch_fwd).mean()
             avg_train_loss += train_loss              
 
             # assign gradient
@@ -295,6 +301,9 @@ class GranRunner(object):
       model_file = os.path.join(self.config.save_dir, self.test_conf.test_model_name)
       load_model(model, model_file, self.device)
 
+      if self.device == "mps":
+        self.device = torch.device("mps")
+        model = model.to(self.device)
 
       # if self.use_gpu:
       #   model = nn.DataParallel(model, device_ids=self.gpus).to(self.device)
