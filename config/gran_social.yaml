@@ -14,54 +14,54 @@ dataset:
   node_order: DFS # k_core/BFS/degree_decent
   train_ratio: 0.8
   dev_ratio: 0.2
-  num_subgraph_batch: 5 # number of subgraphs per mini-batch
+  num_subgraph_batch: 1 # number of subgraphs per mini-batch
   num_fwd_pass: 1
   has_node_feat: false
   is_save_split: false
   is_sample_subgraph: true # set to true if you want to sample subgraphs
-  is_overwrite_precompute: false
+  is_overwrite_precompute: true
 model:
   name: GRANMixtureBernoulli
   num_mix_component: 20
   is_sym: true
-  block_size: 2
+  block_size: 1
   sample_stride: 1
-  max_num_nodes: 402
+  max_num_nodes: 201
   hidden_dim: 256
   embedding_dim: 256
   num_GNN_layers: 7
-  num_GNN_prop: 2
+  num_GNN_prop: 1
   num_canonical_order: 1
   dimension_reduce: true
   has_attention: true
   edge_weight: 1.0e+0
 train:
   optimizer: Adam
-  lr_decay: 0.3
-  lr_decay_epoch: [100000000] # no decay
+  lr_decay: 0.1
+  lr_decay_epoch: [40] # no decay
   num_workers: 0
   max_epoch: 3000
-  batch_size: 10
-  display_iter: 2
-  snapshot_epoch: 1
-  valid_epoch: 1
+  batch_size: 20
+  display_iter: 5
+  snapshot_epoch: 4
+  valid_epoch: 4
   lr: 1.0e-4
   wd: 0.0e-4
   momentum: 0.9
   shuffle: true
   is_resume: true
-  resume_epoch: 30
-  resume_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-08-20-06-40_64617/
-  resume_model: model_snapshot_0000030.pth
+  resume_epoch: 912
+  resume_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-16-13-29-21_37088/
+  resume_model: model_snapshot_0000912.pth
 test:
-  batch_size: 2
-  num_workers: 0
-  num_test_gen: 4 # number of generated samples
+  batch_size: 4
+  num_workers: 4
+  num_test_gen: 32 # number of generated samples
   is_vis: true
   is_single_plot: true # visualize `num_vis` samples in a single image
   is_test_ER: false # test Erdos-Renyi baseline
-  num_vis: 4
-  vis_num_row: 2 # visualize `num_vis` samples in `vis_num_row` rows
+  num_vis: 9
+  vis_num_row: 3 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
-  test_model_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-08-20-06-40_64617/
-  test_model_name: model_snapshot_0000030.pth
+  test_model_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-16-13-29-21_37088/
+  test_model_name: model_snapshot_0000912.pth

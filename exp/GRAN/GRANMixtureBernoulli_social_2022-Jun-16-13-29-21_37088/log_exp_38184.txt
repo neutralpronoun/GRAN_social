@@ -1,0 +1,34 @@
+INFO  | 06/16/2022 04:03:54 PM | File run_exp.py           | Line 26    | Writing log file to /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-16-13-29-21_37088/log_exp_38184.txt
+INFO  | 06/16/2022 04:03:54 PM | File run_exp.py           | Line 27    | Exp instance id = 38184
+INFO  | 06/16/2022 04:03:54 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/16/2022 04:03:54 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/16/2022 04:03:57 PM | File gran_runner.py       | Line 127   | Train/val/test = 320/80/80
+INFO  | 06/16/2022 04:03:57 PM | File gran_runner.py       | Line 140   | No Edges vs. Edges in training set = 33.66570613772577
+INFO  | 06/16/2022 04:04:07 PM | File gran_runner.py       | Line 279   | NLL Loss @ epoch 0441 iteration 00000001 = 0.13360460102558136
+ERROR | 06/16/2022 04:04:11 PM | File run_exp.py           | Line 42    | Traceback (most recent call last):
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/run_exp.py", line 38, in main
+    runner.train()
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/runner/gran_runner.py", line 260, in train
+    train_loss = model(*batch_fwd).mean()
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/model/gran_mixture_bernoulli.py", line 442, in forward
+    log_theta, log_alpha = self._inference(
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/model/gran_mixture_bernoulli.py", line 252, in _inference
+    node_state = self.decoder(
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/model/gran_mixture_bernoulli.py", line 117, in forward
+    state = self._prop(state, edge, edge_feat=edge_feat, layer_idx=ii)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/model/gran_mixture_bernoulli.py", line 88, in _prop
+    att_weight = self.att_head[layer_idx](edge_input)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/container.py", line 141, in forward
+    input = module(input)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/linear.py", line 103, in forward
+    return F.linear(input, self.weight, self.bias)
+KeyboardInterrupt
+

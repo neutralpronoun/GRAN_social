@@ -381,7 +381,7 @@ class GranRunner(object):
       acc = eval_acc_lobster_graph(graphs_gen)
       logger.info('Validity accuracy of generated graphs = {}'.format(acc))
 
-    num_nodes_gen = [len(aa) for aa in graphs_gen]
+    num_nodes_gen = [len(aa.nodes) for aa in graphs_gen]
     
     # Compared with Validation Set    
     num_nodes_dev = [len(gg.nodes) for gg in self.graphs_dev]  # shape B X 1
