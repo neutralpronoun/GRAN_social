@@ -74,12 +74,16 @@ def evaluate(graph_gt, graph_pred, degree_only=True):
     mmd_4orbits = 0.0
     mmd_clustering = 0.0
     mmd_spectral = 0.0
-  else:    
+  else:
+    mmd_radius = radius_stats(graph_gt, graph_pred)
     mmd_4orbits = orbit_stats_all(graph_gt, graph_pred)
     mmd_clustering = clustering_stats(graph_gt, graph_pred)    
     mmd_spectral = spectral_stats(graph_gt, graph_pred)
+    mmd_omega = 1#omega_stats(graph_gt, graph_pred)
+    mmd_sigma = 1#sigma_stats(graph_gt, graph_pred)
+
     
-  return mmd_degree, mmd_clustering, mmd_4orbits, mmd_spectral
+  return mmd_degree, mmd_clustering, mmd_4orbits, mmd_spectral, mmd_radius, mmd_omega, mmd_sigma
 
 
 class GranRunner(object):
@@ -178,6 +182,9 @@ class GranRunner(object):
     if self.device == "mps":
       self.device = torch.device("mps")
       model = model.to(self.device)
+    elif self.device == "cuda":
+      self.device = torch.device("cuda")
+      model = model.to(self.device)
 
     # if self.use_gpu:
     #   model = DataParallel(model, device_ids=self.gpus).to(self.device)
@@ -268,7 +275,7 @@ class GranRunner(object):
         avg_train_loss /= float(self.dataset_conf.num_fwd_pass)
         
         # reduce
-        train_loss = avg_train_loss#float(avg_train_loss.data.cpu().numpy())
+        train_loss = float(avg_train_loss.data.cpu().numpy()) #avg_train_loss#
         #train_loss = float(avg_train_loss.data.cpu().numpy())
         
         self.writer.add_scalar('train_loss', train_loss, iter_count)
@@ -305,8 +312,8 @@ class GranRunner(object):
         self.device = torch.device("mps")
         model = model.to(self.device)
 
-      # if self.use_gpu:
-      #   model = nn.DataParallel(model, device_ids=self.gpus).to(self.device)
+      if self.use_gpu:
+        model = nn.DataParallel(model, device_ids=self.gpus).to(self.device)
 
       model.eval()
 
@@ -382,19 +389,38 @@ class GranRunner(object):
       logger.info('Validity accuracy of generated graphs = {}'.format(acc))
 
     num_nodes_gen = [len(aa.nodes) for aa in graphs_gen]
+
+    n_gen = len(graphs_gen)
     
     # Compared with Validation Set    
     num_nodes_dev = [len(gg.nodes) for gg in self.graphs_dev]  # shape B X 1
-    mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev = evaluate(self.graphs_dev, graphs_gen, degree_only=False)
-    mmd_num_nodes_dev = compute_mmd([np.bincount(num_nodes_dev)], [np.bincount(num_nodes_gen)], kernel=gaussian_emd)
+    mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_radius_dev, mmd_omega_dev, mmd_sigma_dev = evaluate(self.graphs_dev[:n_gen], graphs_gen, degree_only=False)
+    mmd_num_nodes_dev = compute_mmd([np.bincount(num_nodes_dev[:n_gen])], [np.bincount(num_nodes_gen)], kernel=gaussian_emd)
 
     # Compared with Test Set    
     num_nodes_test = [len(gg.nodes) for gg in self.graphs_test]  # shape B X 1
-    mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test = evaluate(self.graphs_test, graphs_gen, degree_only=False)
-    mmd_num_nodes_test = compute_mmd([np.bincount(num_nodes_test)], [np.bincount(num_nodes_gen)], kernel=gaussian_emd)
+    mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test, mmd_radius_test, mmd_omega_test, mmd_sigma_test = evaluate(self.graphs_test[:n_gen], graphs_gen, degree_only=False)
+    mmd_num_nodes_test = compute_mmd([np.bincount(num_nodes_test[:n_gen])], [np.bincount(num_nodes_gen)], kernel=gaussian_emd)
 
-    logger.info("Validation MMD scores of #nodes/degree/clustering/4orbits/spectral are = {}/{}/{}/{}/{}".format(mmd_num_nodes_dev, mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev))
-    logger.info("Test MMD scores of #nodes/degree/clustering/4orbits/spectral are = {}/{}/{}/{}/{}".format(mmd_num_nodes_test, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test))
+    logger.info("\nValidation MMD scores of" 
+                "\n#nodes     {}" 
+                "\ndegree     {}" 
+                "\nclustering {}"
+                "\n4orbits    {}"
+                "\nspectral   {}"
+                "\nradius     {}"
+                "\nomega     {}"
+                "\nsigma     {}".format(mmd_num_nodes_dev, mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_radius_dev, mmd_omega_dev, mmd_sigma_dev))
+
+    logger.info("\nTest MMD scores of" 
+                "\n#nodes     {}" 
+                "\ndegree     {}" 
+                "\nclustering {}"
+                "\n4orbits    {}"
+                "\nspectral   {}"
+                "\nradius     {}"
+                "\nomega     {}"
+                "\nsigma     {}".format(mmd_num_nodes_test, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test, mmd_radius_test, mmd_omega_test, mmd_sigma_test))
 
     if self.config.dataset.name in ['lobster']:
       return mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test, acc

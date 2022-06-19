@@ -4,13 +4,13 @@ exp_dir: exp/GRAN
 runner: GranRunner
 use_horovod: false
 use_gpu: true
-device: cpu
+device: cuda
 gpus: [0]
 seed: 1234
 dataset:
   loader_name: GRANData
   name: social
-  data_path: data/
+  data_path: /home/alex/Documents/Project_CDT/GRAN_social/data
   node_order: DFS # k_core/BFS/degree_decent
   train_ratio: 0.8
   dev_ratio: 0.2
@@ -19,7 +19,7 @@ dataset:
   has_node_feat: false
   is_save_split: false
   is_sample_subgraph: true # set to true if you want to sample subgraphs
-  is_overwrite_precompute: true
+  is_overwrite_precompute: false
 model:
   name: GRANMixtureBernoulli
   num_mix_component: 20
@@ -40,28 +40,28 @@ train:
   lr_decay: 0.1
   lr_decay_epoch: [40] # no decay
   num_workers: 0
-  max_epoch: 3000
+  max_epoch: 10000
   batch_size: 20
   display_iter: 5
-  snapshot_epoch: 4
-  valid_epoch: 4
+  snapshot_epoch: 25
+  valid_epoch: 10
   lr: 1.0e-4
   wd: 0.0e-4
   momentum: 0.9
   shuffle: true
   is_resume: true
-  resume_epoch: 912
-  resume_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-16-13-29-21_37088/
-  resume_model: model_snapshot_0000912.pth
+  resume_epoch: 9750
+  resume_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-16-13-29-21_37088/
+  resume_model: model_snapshot_0009750.pth
 test:
   batch_size: 4
-  num_workers: 4
-  num_test_gen: 32 # number of generated samples
+  num_workers: 2
+  num_test_gen: 12 # number of generated samples
   is_vis: true
   is_single_plot: true # visualize `num_vis` samples in a single image
   is_test_ER: false # test Erdos-Renyi baseline
   num_vis: 9
   vis_num_row: 3 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
-  test_model_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-16-13-29-21_37088/
-  test_model_name: model_snapshot_0000912.pth
+  test_model_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-16-13-29-21_37088/
+  test_model_name: model_snapshot_0009750.pth

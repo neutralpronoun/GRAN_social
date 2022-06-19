@@ -276,11 +276,11 @@ class GRANMixtureBernoulli(nn.Module):
         else:
           N_pad = N
 
-        A = torch.zeros(B, N_pad, N_pad)##.to(torch.device(self.device))
+        A = torch.zeros(B, N_pad, N_pad).to(torch.device(self.device))
         dim_input = self.embedding_dim if self.dimension_reduce else self.max_num_nodes
 
         ### cache node state for speed up
-        node_state = torch.zeros(B, N_pad, dim_input)##.to(torch.device(self.device))
+        node_state = torch.zeros(B, N_pad, dim_input).to(torch.device(self.device))
 
         for ii in range(0, N_pad, S):
           # for ii in range(0, 3530, S):

@@ -17,7 +17,7 @@ from utils.dist_helper import compute_mmd, gaussian_emd, gaussian, emd, gaussian
 PRINT_TIME = False
 __all__ = [
     'clean_graphs', 'degree_stats', 'clustering_stats', 'orbit_stats_all', 'spectral_stats',
-    'eval_acc_lobster_graph'
+    'eval_acc_lobster_graph', 'radius_stats', 'omega_stats', 'sigma_stats'
 ]
 
 
@@ -107,6 +107,155 @@ def degree_stats(graph_ref_list, graph_pred_list, is_parallel=True):
     print('Time computing degree mmd: ', elapsed)
   return mmd_dist
 
+def radius_worker(G):
+  print(nx.is_connected(G))
+  G = get_largest_component(G)
+  print(nx.is_connected(G))
+  print("\n")
+  if nx.is_connected(G):
+    return nx.average_shortest_path_length(G)
+
+def get_largest_component(G):
+  nodes = list([c for c in sorted(nx.connected_components(G), key=len, reverse=True)][0])
+  return G.subgraph(nodes)
+
+def radius_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = True):
+  ''' Compute the distance between the degree distributions of two unordered sets of graphs.
+    Args:
+      graph_ref_list, graph_target_list: two lists of networkx graphs to be evaluated
+    '''
+  sample_ref = []
+  sample_pred = []
+  # in case an empty graph is generated
+  graph_pred_list_remove_empty = [
+    nx.Graph(G) for G in graph_pred_list if not G.number_of_nodes() == 0
+  ]
+
+  prev = datetime.now()
+  print(is_parallel)
+  if is_parallel:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for rad in executor.map(radius_worker, graph_ref_list):
+        sample_ref.append(rad)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for rad in executor.map(radius_worker, graph_pred_list_remove_empty):
+        sample_pred.append(rad)
+
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+    #   for deg_hist in executor.map(degree_worker, graph_ref_list):
+    #     sample_ref.append(deg_hist)
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+    #   for deg_hist in executor.map(degree_worker, graph_pred_list_remove_empty):
+    #     sample_pred.append(deg_hist)
+  else:
+    for i in range(len(graph_ref_list)):
+      degree_temp = np.array(nx.degree_histogram(graph_ref_list[i]))
+      sample_ref.append(degree_temp)
+    for i in range(len(graph_pred_list_remove_empty)):
+      degree_temp = np.array(
+        nx.degree_histogram(graph_pred_list_remove_empty[i]))
+      sample_pred.append(degree_temp)
+  # print(len(sample_ref), len(sample_pred))
+
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
+
+  mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
+
+  elapsed = datetime.now() - prev
+  if PRINT_TIME:
+    print('Time computing radii mmd: ', elapsed)
+  return mmd_dist
+
+def omega_worker(G):
+  # print(nx.is_connected(G))
+  G = get_largest_component(G)
+  return nx.omega(G)
+
+def sigma_worker(G):
+  # print(nx.is_connected(G))
+  G = get_largest_component(G)
+  return nx.sigma(G)
+
+
+def omega_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = True):
+  ''' Compute the distance between the degree distributions of two unordered sets of graphs.
+    Args:
+      graph_ref_list, graph_target_list: two lists of networkx graphs to be evaluated
+    '''
+  sample_ref = []
+  sample_pred = []
+  # in case an empty graph is generated
+  graph_pred_list_remove_empty = [
+    nx.Graph(G) for G in graph_pred_list if not G.number_of_nodes() == 0
+  ]
+
+  prev = datetime.now()
+  print(is_parallel)
+  if is_parallel:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for rad in executor.map(omega_worker, graph_ref_list):
+        sample_ref.append(rad)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for rad in executor.map(omega_worker, graph_pred_list_remove_empty):
+        sample_pred.append(rad)
+
+  else:
+    for i in range(len(graph_ref_list)):
+      degree_temp = np.array(nx.degree_histogram(graph_ref_list[i]))
+      sample_ref.append(degree_temp)
+    for i in range(len(graph_pred_list_remove_empty)):
+      degree_temp = np.array(
+        nx.degree_histogram(graph_pred_list_remove_empty[i]))
+      sample_pred.append(degree_temp)
+
+  mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
+
+  elapsed = datetime.now() - prev
+  if PRINT_TIME:
+    print('Time computing omegas mmd: ', elapsed)
+  return mmd_dist
+
+
+def sigma_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = True):
+  ''' Compute the distance between the degree distributions of two unordered sets of graphs.
+    Args:
+      graph_ref_list, graph_target_list: two lists of networkx graphs to be evaluated
+    '''
+  sample_ref = []
+  sample_pred = []
+  # in case an empty graph is generated
+  graph_pred_list_remove_empty = [
+    nx.Graph(G) for G in graph_pred_list if not G.number_of_nodes() == 0
+  ]
+
+  prev = datetime.now()
+  print(is_parallel)
+  if is_parallel:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for rad in executor.map(sigma_worker, graph_ref_list):
+        sample_ref.append(rad)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for rad in executor.map(sigma_worker, graph_pred_list_remove_empty):
+        sample_pred.append(rad)
+
+  else:
+    for i in range(len(graph_ref_list)):
+      degree_temp = np.array(nx.degree_histogram(graph_ref_list[i]))
+      sample_ref.append(degree_temp)
+    for i in range(len(graph_pred_list_remove_empty)):
+      degree_temp = np.array(
+        nx.degree_histogram(graph_pred_list_remove_empty[i]))
+      sample_pred.append(degree_temp)
+
+  mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
+
+  elapsed = datetime.now() - prev
+  if PRINT_TIME:
+    print('Time computing sigmas mmd: ', elapsed)
+  return mmd_dist
 ###############################################################################
 
 def spectral_worker(G):

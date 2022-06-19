@@ -93,7 +93,7 @@ def graph_load_batch(data_dir,
   print('Loading graph dataset: ' + str(name))
   G = nx.Graph()
   # load data
-  path = os.path.join(data_dir, name)
+  path = os.path.join(data_dir, name.upper())
   data_adj = np.loadtxt(
       os.path.join(path, '{}_A.txt'.format(name)), delimiter=',').astype(int)
   if node_attributes:
