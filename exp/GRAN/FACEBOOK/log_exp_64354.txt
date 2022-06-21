@@ -1,0 +1,25 @@
+INFO  | 06/21/2022 04:05:25 PM | File run_exp.py           | Line 26    | Writing log file to /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/FACEBOOK/log_exp_64354.txt
+INFO  | 06/21/2022 04:05:25 PM | File run_exp.py           | Line 27    | Exp instance id = 64354
+INFO  | 06/21/2022 04:05:25 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/21/2022 04:05:25 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/21/2022 04:05:30 PM | File gran_runner.py       | Line 135   | Train/val/test = 640/160/160
+INFO  | 06/21/2022 04:05:31 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 32.720548854620965
+INFO  | 06/21/2022 04:05:46 PM | File gran_runner.py       | Line 488   | Average test time per mini-batch = 14.908100128173828
+INFO  | 06/21/2022 04:06:50 PM | File gran_runner.py       | Line 577   | 
+Validation MMD scores of
+#nodes        2.0
+degree        0.01802452894127682
+clustering    0.4944777472957646
+4orbits       0
+spectral      0.027427380454497774
+SIRV   r/s    1.0275936327997177
+radius r/s    0.9041095890410958
+INFO  | 06/21/2022 04:06:50 PM | File gran_runner.py       | Line 587   | 
+Test MMD scores of
+#nodes       2.0
+degree       0.02231600610702289
+clustering   0.4990822343848966
+4orbits      0
+spectral     0.04201757494624858
+SIRV   r/s    1.0521833244292715
+radius r/s   0.9758713136729222

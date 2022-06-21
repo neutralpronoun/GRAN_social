@@ -27,15 +27,17 @@ def main():
   logger.info("Exp instance id = {}".format(config.run_id))
   logger.info("Exp comment = {}".format(args.comment))
   logger.info("Config =")
-  print(">" * 80)
-  pprint(config)
-  print("<" * 80)
+  # print(">" * 80)
+  # pprint(config)
+  # print("<" * 80)
 
   # Run the experiment
   try:
     runner = eval(config.runner)(config)
-    if not args.test:
-      runner.train()
+    if args.test:
+      runner.test()
+    elif args.generate:
+      runner.generate()
     else:
       runner.test()
   except:

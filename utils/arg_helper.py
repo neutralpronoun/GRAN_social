@@ -28,6 +28,7 @@ def parse_arguments():
         CRITICAL")
   parser.add_argument('-m', '--comment', help="Experiment comment")
   parser.add_argument('-t', '--test', help="Test model", action='store_true')
+  parser.add_argument('-g', '--generate', help="Generate graphs", action='store_true')
   args = parser.parse_args()
 
   return args

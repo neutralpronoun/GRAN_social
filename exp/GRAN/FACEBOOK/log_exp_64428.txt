@@ -1,0 +1,7 @@
+INFO  | 06/21/2022 04:07:47 PM | File run_exp.py           | Line 26    | Writing log file to /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/FACEBOOK/log_exp_64428.txt
+INFO  | 06/21/2022 04:07:47 PM | File run_exp.py           | Line 27    | Exp instance id = 64428
+INFO  | 06/21/2022 04:07:47 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/21/2022 04:07:47 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/21/2022 04:07:52 PM | File gran_runner.py       | Line 135   | Train/val/test = 640/160/160
+INFO  | 06/21/2022 04:07:53 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 32.720548854620965
+INFO  | 06/21/2022 04:22:47 PM | File gran_runner.py       | Line 488   | Average test time per mini-batch = 17.87984722137451

@@ -45,7 +45,7 @@ def snapshot(model, optimizer, config, step, gpus=[0], tag=None, scheduler=None)
 
 
 def load_model(model, file_name, device, optimizer=None, scheduler=None):
-  model_snapshot = torch.load(file_name)#, map_location=device)
+  model_snapshot = torch.load(file_name, map_location=device)
 
   model.load_state_dict(model_snapshot["model"])
   if optimizer is not None:

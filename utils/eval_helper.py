@@ -13,11 +13,12 @@ from random import shuffle
 from datetime import datetime
 from scipy.linalg import eigvalsh
 from utils.dist_helper import compute_mmd, gaussian_emd, gaussian, emd, gaussian_tv
+import random
 
 PRINT_TIME = False
 __all__ = [
     'clean_graphs', 'degree_stats', 'clustering_stats', 'orbit_stats_all', 'spectral_stats',
-    'eval_acc_lobster_graph', 'radius_stats', 'omega_stats', 'sigma_stats'
+    'eval_acc_lobster_graph', 'radius_stats', 'omega_stats', 'sigma_stats', 'diffusion_stats'
 ]
 
 
@@ -107,11 +108,138 @@ def degree_stats(graph_ref_list, graph_pred_list, is_parallel=True):
     print('Time computing degree mmd: ', elapsed)
   return mmd_dist
 
-def radius_worker(G):
-  print(nx.is_connected(G))
+#%%
+def SIR_ENDPOINT(G,Nb_inf_init,Gamma,HM, T):
+    """ function that runs a simulation of an SIR model on a network.
+    Args:
+        Gamma(float): recovery rate
+        Beta(float): infection probability
+        Rho(float): initial fraction of infected individuals
+        T(int): number of time steps simulated
+    """
+
+    N = len(list(G.nodes()))
+
+    s =   [N - Nb_inf_init] #np.zeros(T)
+    inf = [Nb_inf_init] #np.zeros(T)
+    r =   [0] #np.zeros(T)
+
+    """Make a graph with some infected nodes."""
+    for u in G.nodes():
+        G.nodes[u]["state"] = 0
+        G.nodes[u]["TimeInfected"] = 0
+        G.nodes[u]["noeux_associes"] = [n for n in G.neighbors(u)]
+
+    init = random.sample(G.nodes(), Nb_inf_init)
+    for u in init:
+        G.nodes[u]["state"] = 1
+        G.nodes[u]["TimeInfected"] = 1
+    # running simulation
+    is_ended = False
+    t = 0
+    while not is_ended:
+
+        s.append(s[t-1])
+        inf.append(inf[t-1])
+        r.append(r[t-1])
+
+        # Check which persons have recovered
+        for u in G.nodes:
+            # if infected
+            if G.nodes[u]["state"] == 1:   #infected?
+                if G.nodes[u]["TimeInfected"] < Gamma:
+                    G.nodes[u]["TimeInfected"] += 1
+                else:
+                    G.nodes[u]["state"] = 2 #"recovered"
+                    r[t] += 1
+                    inf[t] += -1
+        # check contagion
+        for u in G.nodes:
+            #if susceptible
+            if G.nodes[u]["state"] == 0:
+                for n in G.nodes[u]["noeux_associes"]:
+                    if G.nodes[n]["state"] == 1: # if friend is infected
+                        if np.random.rand() < HM:
+                            G.nodes[u]["state"] = 1
+                            inf[t] += 1
+                            s[t] += -1
+                            break
+
+        if inf[t] == 0 or t == T: #
+            is_ended = True
+        t += 1
+
+    return len(inf)
+
+
+def mean_duration(G, N_runs, T = 100, HM = 0.04, Gamma = 5, Nb_inf_init = 2):
+    durations = np.zeros(N_runs)
+    for i in range(N_runs):
+        durations[i] = SIR_ENDPOINT(G, Nb_inf_init, Gamma, HM, T)
+    return np.mean(durations)
+
+def duration_worker(G):
   G = get_largest_component(G)
-  print(nx.is_connected(G))
-  print("\n")
+
+  return mean_duration(G, 10)
+
+def diffusion_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = True):
+  ''' Compute the distance between the degree distributions of two unordered sets of graphs.
+    Args:
+      graph_ref_list, graph_target_list: two lists of networkx graphs to be evaluated
+    '''
+  sample_ref = []
+  sample_pred = []
+  # in case an empty graph is generated
+  graph_pred_list_remove_empty = [
+    nx.Graph(G) for G in graph_pred_list if not G.number_of_nodes() == 0
+  ]
+
+  prev = datetime.now()
+  if is_parallel:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for rad in executor.map(duration_worker, graph_ref_list):
+        sample_ref.append(rad)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for rad in executor.map(duration_worker, graph_pred_list_remove_empty):
+        sample_pred.append(rad)
+
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+    #   for deg_hist in executor.map(degree_worker, graph_ref_list):
+    #     sample_ref.append(deg_hist)
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+    #   for deg_hist in executor.map(degree_worker, graph_pred_list_remove_empty):
+    #     sample_pred.append(deg_hist)
+  else:
+    for i in range(len(graph_ref_list)):
+      degree_temp = np.array(nx.degree_histogram(graph_ref_list[i]))
+      sample_ref.append(degree_temp)
+    for i in range(len(graph_pred_list_remove_empty)):
+      degree_temp = np.array(
+        nx.degree_histogram(graph_pred_list_remove_empty[i]))
+      sample_pred.append(degree_temp)
+  # print(len(sample_ref), len(sample_pred))
+
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
+
+  mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
+
+  elapsed = datetime.now() - prev
+  if PRINT_TIME:
+    print('\nTime computing diffusion endpoints: ', elapsed)
+    print(f'Mean diffusion steps sample: {np.mean(sample_ref)}')
+    print(f'Mean diffusion steps gen   : {np.mean(sample_pred)}\n')
+  return mmd_dist
+
+
+def radius_worker(G):
+  # print(nx.is_connected(G))
+  G = get_largest_component(G)
+  # print(nx.is_connected(G))
+  # print("\n")
   if nx.is_connected(G):
     return nx.average_shortest_path_length(G)
 
@@ -132,7 +260,6 @@ def radius_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME =
   ]
 
   prev = datetime.now()
-  print(is_parallel)
   if is_parallel:
     with concurrent.futures.ThreadPoolExecutor() as executor:
       for rad in executor.map(radius_worker, graph_ref_list):
@@ -166,18 +293,20 @@ def radius_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME =
 
   elapsed = datetime.now() - prev
   if PRINT_TIME:
-    print('Time computing radii mmd: ', elapsed)
+    print('\nTime computing radii: ', elapsed)
+    print(f'Mean radius sample: {np.mean(sample_ref)}')
+    print(f'Mean radius gen   : {np.mean(sample_pred)}\n')
   return mmd_dist
 
 def omega_worker(G):
   # print(nx.is_connected(G))
   G = get_largest_component(G)
-  return nx.omega(G)
+  return nx.omega(G, niter=10, nrand=2)
 
 def sigma_worker(G):
   # print(nx.is_connected(G))
   G = get_largest_component(G)
-  return nx.sigma(G)
+  return nx.sigma(G, niter=10, nrand=2)
 
 
 def omega_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = True):
@@ -193,7 +322,7 @@ def omega_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = 
   ]
 
   prev = datetime.now()
-  print(is_parallel)
+  print(f"Omega is parallel: {is_parallel}")
   if is_parallel:
     with concurrent.futures.ThreadPoolExecutor() as executor:
       for rad in executor.map(omega_worker, graph_ref_list):
@@ -232,7 +361,7 @@ def sigma_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = 
   ]
 
   prev = datetime.now()
-  print(is_parallel)
+  print(f"Sigma is parallel: {is_parallel}")
   if is_parallel:
     with concurrent.futures.ThreadPoolExecutor() as executor:
       for rad in executor.map(sigma_worker, graph_ref_list):
@@ -255,7 +384,7 @@ def sigma_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = 
   elapsed = datetime.now() - prev
   if PRINT_TIME:
     print('Time computing sigmas mmd: ', elapsed)
-  return mmd_dist
+  return np.mean(sample_ref), np.mean(sample_pred)
 ###############################################################################
 
 def spectral_worker(G):
