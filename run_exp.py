@@ -34,12 +34,14 @@ def main():
   # Run the experiment
   try:
     runner = eval(config.runner)(config)
+    print(args.test, args.generate)
+
     if args.test:
       runner.test()
     elif args.generate:
       runner.generate()
     else:
-      runner.test()
+      runner.train()
   except:
     logger.error(traceback.format_exc())
 

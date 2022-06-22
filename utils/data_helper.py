@@ -201,8 +201,8 @@ def create_graphs(graph_type, data_dir='data', noise=10.0, seed=1234):
   elif graph_type == "social":
     graphs = graph_load_batch(
         data_dir,
-        min_num_nodes=199,
-        max_num_nodes=201,
+        min_num_nodes=799,
+        max_num_nodes=801,
         name='social',
         node_attributes=False,
         graph_labels=True)
