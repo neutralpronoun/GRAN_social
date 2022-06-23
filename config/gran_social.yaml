@@ -50,9 +50,9 @@ train:
   momentum: 0.9
   shuffle: true
   is_resume: true
-  resume_epoch: 9750
+  resume_epoch: 1000
   resume_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK_LARGE
-  resume_model: model_snapshot_0000525.pth
+  resume_model: model_snapshot_0001000.pth
 test:
   batch_size: 4
   num_workers: 6
@@ -64,7 +64,7 @@ test:
   vis_num_row: 4 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
   test_model_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK_LARGE
-  test_model_name: model_snapshot_0000525.pth
+  test_model_name: model_snapshot_0001000.pth
 generate:
   batch_size: 4
   num_workers: 6
@@ -76,4 +76,4 @@ generate:
   vis_num_row: 4 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
   test_model_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK_LARGE
-  test_model_name: model_snapshot_0000525.pth
+  test_model_name: model_snapshot_0001000.pth

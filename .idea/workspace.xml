@@ -3,6 +3,47 @@
   <component name="ChangeListManager">
     <list default="true" id="604dffb5-155e-4e5e-be1e-8dc0e67c4827" name="Changes" comment="Working well on FB data">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
+=======
+      <change beforePath="$PROJECT_DIR$/config/gran_social.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/gran_social.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/SOCIAL/social_A.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/SOCIAL/social_A.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/SOCIAL/social_graph_indicator.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/SOCIAL/social_graph_indicator.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_exp.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_exp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/graph_example0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example100.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/graph_example100.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example125.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/graph_example125.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example150.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/graph_example150.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example175.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/graph_example175.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example200.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example225.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example25.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/graph_example25.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example250.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example275.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example300.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example325.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example350.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example375.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example400.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example425.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example450.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example475.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example50.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/graph_example50.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example500.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example525.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example550.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example575.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example600.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example625.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example650.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example675.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example700.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example725.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example75.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/graph_example75.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example750.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/graph_example775.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/social_to_adjacency/social_to_adjacency.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/social_to_adjacency/social_to_adjacency.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/data_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/data_helper.py" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +71,7 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="JupyterTrust" id="cd4760f5-5937-4385-83ab-2117dc50f368" />
   <component name="ProjectId" id="2A9l9yfVDPRPbTd99KgV9fb05If" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -88,7 +130,12 @@
       <workItem from="1654765993517" duration="2648000" />
       <workItem from="1654968788671" duration="1750000" />
       <workItem from="1655113911868" duration="25124000" />
+<<<<<<< Updated upstream
       <workItem from="1655752861399" duration="22105000" />
+=======
+      <workItem from="1655752861399" duration="19236000" />
+      <workItem from="1655886591335" duration="2376000" />
+>>>>>>> Stashed changes
     </task>
     <task id="LOCAL-00001" summary="mac m1 nearly there">
       <created>1654513985633</created>
@@ -202,7 +249,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/runner/gran_runner.py</url>
-          <line>420</line>
+          <line>428</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>

@@ -56,8 +56,8 @@ test:
   num_test_gen: 12
   num_vis: 12
   num_workers: 6
-  test_model_dir: exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-22-09-46-14_12589
-  test_model_name: model_snapshot_0000525.pth
+  test_model_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK_LARGE
+  test_model_name: model_snapshot_0001000.pth
   vis_num_row: 4
 train:
   batch_size: 5
