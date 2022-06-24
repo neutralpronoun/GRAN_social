@@ -57,7 +57,7 @@ test:
   num_vis: 12
   num_workers: 6
   test_model_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK_LARGE
-  test_model_name: model_snapshot_0001000.pth
+  test_model_name: model_snapshot_0010000.pth
   vis_num_row: 4
 train:
   batch_size: 5
