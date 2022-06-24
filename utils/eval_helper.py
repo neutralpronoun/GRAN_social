@@ -100,6 +100,7 @@ def degree_stats(graph_ref_list, graph_pred_list, is_parallel=True):
 
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
+  print(f"degree: {sample_ref}")
   mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
 
@@ -176,7 +177,7 @@ def mean_duration(G, N_runs, T = 100, HM = 0.04, Gamma = 5, Nb_inf_init = 2):
     durations = np.zeros(N_runs)
     for i in range(N_runs):
         durations[i] = SIR_ENDPOINT(G, Nb_inf_init, Gamma, HM, T)
-    return np.mean(durations)
+    return durations
 
 def duration_worker(G):
   G = get_largest_component(G)
@@ -222,10 +223,11 @@ def diffusion_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIM
 
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
-  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
+  print(f"diffusion: {sample_ref}")
+  mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
 
-  mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
+  # mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
 
   elapsed = datetime.now() - prev
   if PRINT_TIME:
@@ -234,6 +236,15 @@ def diffusion_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIM
     print(f'Mean diffusion steps gen   : {np.mean(sample_pred)}\n')
   return mmd_dist
 
+def get_paths(G):
+  paths = nx.shortest_path_length(G)
+  all_paths = []
+  for p in paths:
+    for ip in p[1]:
+      all_paths.append(p[1][ip])
+  all_paths = np.array(all_paths)
+
+  return all_paths
 
 def radius_worker(G):
   # print(nx.is_connected(G))
@@ -241,7 +252,7 @@ def radius_worker(G):
   # print(nx.is_connected(G))
   # print("\n")
   if nx.is_connected(G):
-    return nx.average_shortest_path_length(G)
+    return get_paths(G)#nx.average_shortest_path_length(G)
 
 def get_largest_component(G):
   nodes = list([c for c in sorted(nx.connected_components(G), key=len, reverse=True)][0])
@@ -286,16 +297,16 @@ def radius_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME =
 
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
-  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
+  mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
 
-  mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
+  # mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
 
   elapsed = datetime.now() - prev
   if PRINT_TIME:
     print('\nTime computing radii: ', elapsed)
-    print(f'Mean radius sample: {np.mean(sample_ref)}')
-    print(f'Mean radius gen   : {np.mean(sample_pred)}\n')
+    # print(f'Mean radius sample: {np.mean(sample_ref)}')
+    # print(f'Mean radius gen   : {np.mean(sample_pred)}\n')
   return mmd_dist
 
 def omega_worker(G):

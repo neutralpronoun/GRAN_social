@@ -1,0 +1,36 @@
+INFO  | 06/24/2022 01:58:07 PM | File run_exp.py           | Line 26    | Writing log file to exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-24-13-58-07_85519/log_exp_85519.txt
+INFO  | 06/24/2022 01:58:07 PM | File run_exp.py           | Line 27    | Exp instance id = 85519
+INFO  | 06/24/2022 01:58:07 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/24/2022 01:58:07 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/24/2022 01:58:14 PM | File gran_runner.py       | Line 135   | Train/val/test = 160/40/40
+INFO  | 06/24/2022 01:58:15 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 89.22312601985614
+INFO  | 06/24/2022 02:01:06 PM | File gran_runner.py       | Line 342   | Average test time per mini-batch = 170.80935907363892
+ERROR | 06/24/2022 02:04:58 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/run_exp.py", line 40, in main
+    runner.test()
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/runner/gran_runner.py", line 406, in test
+    mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_diffusion_dev, mmd_radius_dev = evaluate(self.graphs_dev[:n_gen], graphs_gen, degree_only=False)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/runner/gran_runner.py", line 85, in evaluate
+    mmd_diffusion = diffusion_stats(graph_gt, graph_pred)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/utils/eval_helper.py", line 227, in diffusion_stats
+    mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/utils/dist_helper.py", line 158, in compute_mmd
+    return disc(samples1, samples1, kernel, *args, **kwargs) + \
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/utils/dist_helper.py", line 134, in disc
+    for dist in executor.map(kernel_parallel_worker, [
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/concurrent/futures/_base.py", line 608, in result_iterator
+    yield fs.pop().result()
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/concurrent/futures/_base.py", line 438, in result
+    return self.__get_result()
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/concurrent/futures/_base.py", line 390, in __get_result
+    raise self._exception
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/utils/dist_helper.py", line 115, in kernel_parallel_worker
+    return kernel_parallel_unpacked(*t)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/utils/dist_helper.py", line 110, in kernel_parallel_unpacked
+    d += kernel(x, s2)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/utils/dist_helper.py", line 94, in gaussian_tv
+    support_size = max(len(x), len(y))
+TypeError: object of type 'numpy.float64' has no len()
+

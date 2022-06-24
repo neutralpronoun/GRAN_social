@@ -1,0 +1,18 @@
+INFO  | 06/24/2022 01:55:45 PM | File run_exp.py           | Line 26    | Writing log file to exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-24-13-55-45_85495/log_exp_85495.txt
+INFO  | 06/24/2022 01:55:45 PM | File run_exp.py           | Line 27    | Exp instance id = 85495
+INFO  | 06/24/2022 01:55:45 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/24/2022 01:55:45 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/24/2022 01:55:52 PM | File gran_runner.py       | Line 135   | Train/val/test = 160/40/40
+INFO  | 06/24/2022 01:55:53 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 89.22312601985614
+ERROR | 06/24/2022 01:55:53 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/run_exp.py", line 40, in main
+    runner.test()
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/runner/gran_runner.py", line 313, in test
+    load_model(model, model_file, self.device)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/utils/train_helper.py", line 50, in load_model
+    model.load_state_dict(model_snapshot["model"])
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1497, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for GRANMixtureBernoulli:
+	size mismatch for decoder_input.0.weight: copying a param with shape torch.Size([256, 201]) from checkpoint, the shape in current model is torch.Size([256, 801]).
+

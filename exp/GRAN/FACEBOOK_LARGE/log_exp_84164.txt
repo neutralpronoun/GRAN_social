@@ -1,0 +1,31 @@
+INFO  | 06/24/2022 10:10:14 AM | File run_exp.py           | Line 26    | Writing log file to /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/FACEBOOK_LARGE/log_exp_84164.txt
+INFO  | 06/24/2022 10:10:14 AM | File run_exp.py           | Line 27    | Exp instance id = 84164
+INFO  | 06/24/2022 10:10:14 AM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/24/2022 10:10:14 AM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/24/2022 10:10:21 AM | File gran_runner.py       | Line 135   | Train/val/test = 160/40/40
+INFO  | 06/24/2022 10:10:22 AM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 89.22312601985614
+ERROR | 06/24/2022 10:10:22 AM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/run_exp.py", line 42, in main
+    runner.generate()
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/runner/gran_runner.py", line 455, in generate
+    load_model(model, model_file, self.device)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/utils/train_helper.py", line 48, in load_model
+    model_snapshot = torch.load(file_name, map_location=device)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/serialization.py", line 712, in load
+    return _load(opened_zipfile, map_location, pickle_module, **pickle_load_args)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/serialization.py", line 1046, in _load
+    result = unpickler.load()
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/serialization.py", line 1016, in persistent_load
+    load_tensor(dtype, nbytes, key, _maybe_decode_ascii(location))
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/serialization.py", line 1001, in load_tensor
+    wrap_storage=restore_location(storage, location),
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/serialization.py", line 970, in restore_location
+    return default_restore_location(storage, map_location)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/serialization.py", line 176, in default_restore_location
+    result = fn(storage, location)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/serialization.py", line 152, in _cuda_deserialize
+    device = validate_cuda_device(location)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/serialization.py", line 136, in validate_cuda_device
+    raise RuntimeError('Attempting to deserialize object on a CUDA '
+RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to the CPU.
+

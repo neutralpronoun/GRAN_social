@@ -1,0 +1,33 @@
+INFO  | 06/24/2022 02:38:37 PM | File run_exp.py           | Line 26    | Writing log file to exp/GRAN/GRANMixtureBernoulli_social_2022-Jun-24-14-38-37_85846/log_exp_85846.txt
+INFO  | 06/24/2022 02:38:37 PM | File run_exp.py           | Line 27    | Exp instance id = 85846
+INFO  | 06/24/2022 02:38:37 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/24/2022 02:38:37 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/24/2022 02:38:45 PM | File gran_runner.py       | Line 135   | Train/val/test = 160/40/40
+INFO  | 06/24/2022 02:38:45 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 89.22312601985614
+ERROR | 06/24/2022 02:41:03 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/run_exp.py", line 40, in main
+    runner.test()
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/runner/gran_runner.py", line 337, in test
+    A_tmp = model(input_dict)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 150, in forward
+    return self.module(*inputs, **kwargs)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/model/gran_mixture_bernoulli.py", line 457, in forward
+    A = self._sampling(batch_size)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/model/gran_mixture_bernoulli.py", line 341, in _sampling
+    node_state_out = self.decoder(
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/model/gran_mixture_bernoulli.py", line 117, in forward
+    state = self._prop(state, edge, edge_feat=edge_feat, layer_idx=ii)
+  File "/Users/alexdavies/Documents/Year_1/Project/GRAN_social/model/gran_mixture_bernoulli.py", line 84, in _prop
+    msg = self.msg_func[layer_idx](edge_input)
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/container.py", line 199, in __getitem__
+    return self._modules[self._get_abs_string_index(idx)]
+  File "/Users/alexdavies/miniforge3/envs/gran/lib/python3.9/site-packages/torch/nn/modules/container.py", line 187, in _get_abs_string_index
+    idx = operator.index(idx)
+KeyboardInterrupt
+
