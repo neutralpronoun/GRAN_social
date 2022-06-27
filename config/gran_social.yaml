@@ -4,13 +4,13 @@ exp_dir: exp/GRAN
 runner: GranRunner
 use_horovod: false
 use_gpu: true
-device: cpu
+device: cuda
 gpus: [0]
 seed: 4454
 dataset:
   loader_name: GRANData
-  name: social
-  data_path: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/data
+  name: facebook
+  data_path: /home/alex/Documents/Project_CDT/GRAN_social/data
   node_order: DFS # k_core/BFS/degree_decent
   train_ratio: 0.8
   dev_ratio: 0.2
@@ -26,7 +26,7 @@ model:
   is_sym: true
   block_size: 1
   sample_stride: 1
-  max_num_nodes: 801
+  max_num_nodes: 201
   hidden_dim: 256
   embedding_dim: 256
   num_GNN_layers: 7
@@ -40,10 +40,10 @@ train:
   lr_decay: 0.1
   lr_decay_epoch: [40] # no decay
   num_workers: 0
-  max_epoch: 10000
+  max_epoch: 20000
   batch_size: 5
   display_iter: 5
-  snapshot_epoch: 25
+  snapshot_epoch: 50
   valid_epoch: 10
   lr: 1.0e-4
   wd: 0.0e-4
@@ -51,7 +51,7 @@ train:
   shuffle: true
   is_resume: true
   resume_epoch: 10000
-  resume_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/FACEBOOK_LARGE
+  resume_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK
   resume_model: model_snapshot_0010000.pth
 test:
   batch_size: 4
@@ -63,17 +63,17 @@ test:
   num_vis: 12
   vis_num_row: 4 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
-  test_model_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/FACEBOOK_LARGE
+  test_model_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK
   test_model_name: model_snapshot_0010000.pth
 generate:
   batch_size: 4
   num_workers: 6
-  num_test_gen: 4 # number of generated samples
-  is_eval: false
+  num_test_gen: 12 # number of generated samples
+  is_eval: true
   is_vis: true
   is_single_plot: true # visualize `num_vis` samples in a single image
   num_vis: 12
   vis_num_row: 4 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
-  test_model_dir: /Users/alexdavies/Documents/Year_1/Project/GRAN_social/exp/GRAN/FACEBOOK_LARGE
+  test_model_dir: /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK
   test_model_name: model_snapshot_0010000.pth

@@ -1,0 +1,17 @@
+INFO  | 06/24/2022 03:54:43 PM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK_LARGE/log_exp_4004276.txt
+INFO  | 06/24/2022 03:54:43 PM | File run_exp.py           | Line 27    | Exp instance id = 4004276
+INFO  | 06/24/2022 03:54:43 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/24/2022 03:54:43 PM | File run_exp.py           | Line 29    | Config =
+ERROR | 06/24/2022 03:54:54 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "run_exp.py", line 36, in main
+    runner = eval(config.runner)(config)
+  File "/home/alex/Documents/Project_CDT/GRAN_social/runner/gran_runner.py", line 120, in __init__
+    self.graphs = create_graphs(config.dataset.name, data_dir=config.dataset.data_path)
+  File "/home/alex/Documents/Project_CDT/GRAN_social/utils/data_helper.py", line 202, in create_graphs
+    graphs = graph_load_batch(
+  File "/home/alex/Documents/Project_CDT/GRAN_social/utils/data_helper.py", line 119, in graph_load_batch
+    G.add_edges_from(data_tuple)
+  File "/home/alex/anaconda3/lib/python3.8/site-packages/networkx/classes/graph.py", line 951, in add_edges_from
+    datadict = self._adj[u].get(v, self.edge_attr_dict_factory())
+KeyboardInterrupt
+

@@ -1,0 +1,19 @@
+INFO  | 06/26/2022 01:31:17 PM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK_LARGE/log_exp_3053973.txt
+INFO  | 06/26/2022 01:31:17 PM | File run_exp.py           | Line 27    | Exp instance id = 3053973
+INFO  | 06/26/2022 01:31:17 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/26/2022 01:31:17 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/26/2022 01:31:34 PM | File gran_runner.py       | Line 135   | Train/val/test = 160/40/40
+INFO  | 06/26/2022 01:31:36 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 89.22312601985614
+ERROR | 06/26/2022 01:31:36 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "run_exp.py", line 42, in main
+    runner.generate()
+  File "/home/alex/Documents/Project_CDT/GRAN_social/runner/gran_runner.py", line 455, in generate
+    load_model(model, model_file, self.device)
+  File "/home/alex/Documents/Project_CDT/GRAN_social/utils/train_helper.py", line 48, in load_model
+    model_snapshot = torch.load(file_name, map_location=device)
+  File "/home/alex/anaconda3/lib/python3.8/site-packages/torch/serialization.py", line 585, in load
+    with _open_zipfile_reader(opened_file) as opened_zipfile:
+  File "/home/alex/anaconda3/lib/python3.8/site-packages/torch/serialization.py", line 242, in __init__
+    super(_open_zipfile_reader, self).__init__(torch._C.PyTorchFileReader(name_or_buffer))
+RuntimeError: [enforce fail at inline_container.cc:145] . PytorchStreamReader failed reading zip archive: failed finding central directory
+

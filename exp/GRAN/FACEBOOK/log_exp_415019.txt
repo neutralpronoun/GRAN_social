@@ -1,0 +1,21 @@
+INFO  | 06/27/2022 10:33:44 AM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK/log_exp_415019.txt
+INFO  | 06/27/2022 10:33:44 AM | File run_exp.py           | Line 27    | Exp instance id = 415019
+INFO  | 06/27/2022 10:33:44 AM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/27/2022 10:33:44 AM | File run_exp.py           | Line 29    | Config =
+ERROR | 06/27/2022 10:33:44 AM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "run_exp.py", line 36, in main
+    runner = eval(config.runner)(config)
+  File "/home/alex/Documents/Project_CDT/GRAN_social/runner/gran_runner.py", line 120, in __init__
+    self.graphs = create_graphs(config.dataset.name, data_dir=config.dataset.data_path)
+  File "/home/alex/Documents/Project_CDT/GRAN_social/utils/data_helper.py", line 215, in create_graphs
+    graphs = graph_load_batch(
+  File "/home/alex/Documents/Project_CDT/GRAN_social/utils/data_helper.py", line 97, in graph_load_batch
+    data_adj = np.loadtxt(
+  File "/home/alex/.local/lib/python3.8/site-packages/numpy/lib/npyio.py", line 1042, in loadtxt
+    fh = np.lib._datasource.open(fname, 'rt', encoding=encoding)
+  File "/home/alex/.local/lib/python3.8/site-packages/numpy/lib/_datasource.py", line 193, in open
+    return ds.open(path, mode, encoding=encoding, newline=newline)
+  File "/home/alex/.local/lib/python3.8/site-packages/numpy/lib/_datasource.py", line 532, in open
+    raise FileNotFoundError(f"{path} not found.")
+FileNotFoundError: /home/alex/Documents/Project_CDT/GRAN_social/data/FACEBOOK/FACEBOOK_A.txt not found.
+
