@@ -211,7 +211,7 @@ def create_graphs(graph_type, data_dir='data', noise=10.0, seed=1234):
     print(graphs[0])
 
 
-  elif graph_type == "facebook":
+  elif graph_type == "FACEBOOK":
     graphs = graph_load_batch(
         data_dir,
         min_num_nodes=199,
@@ -223,7 +223,8 @@ def create_graphs(graph_type, data_dir='data', noise=10.0, seed=1234):
     # print(graphs)
     print(graphs[0])
 
-  elif graph_type == "facebook_large":
+  elif graph_type == "FACEBOOK_LARGE":
+    print(data_dir)
     graphs = graph_load_batch(
         data_dir,
         min_num_nodes=799,

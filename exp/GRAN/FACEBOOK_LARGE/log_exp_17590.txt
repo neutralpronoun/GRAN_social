@@ -1,0 +1,33 @@
+INFO  | 06/29/2022 06:17:19 AM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Projects/GRAN_social/exp/GRAN/FACEBOOK_LARGE/log_exp_17590.txt
+INFO  | 06/29/2022 06:17:19 AM | File run_exp.py           | Line 27    | Exp instance id = 17590
+INFO  | 06/29/2022 06:17:19 AM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/29/2022 06:17:19 AM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/29/2022 06:17:24 AM | File gran_runner.py       | Line 135   | Train/val/test = 160/40/40
+INFO  | 06/29/2022 06:17:25 AM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 89.22312601985614
+ERROR | 06/29/2022 06:17:57 AM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/home/alex/Projects/GRAN_social/run_exp.py", line 44, in main
+    runner.train()
+  File "/home/alex/Projects/GRAN_social/runner/gran_runner.py", line 271, in train
+    train_loss = model(*batch_fwd).mean()
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/alex/Projects/GRAN_social/model/gran_mixture_bernoulli.py", line 442, in forward
+    log_theta, log_alpha = self._inference(
+  File "/home/alex/Projects/GRAN_social/model/gran_mixture_bernoulli.py", line 252, in _inference
+    node_state = self.decoder(
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/alex/Projects/GRAN_social/model/gran_mixture_bernoulli.py", line 117, in forward
+    state = self._prop(state, edge, edge_feat=edge_feat, layer_idx=ii)
+  File "/home/alex/Projects/GRAN_social/model/gran_mixture_bernoulli.py", line 88, in _prop
+    att_weight = self.att_head[layer_idx](edge_input)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/nn/modules/container.py", line 139, in forward
+    input = module(input)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/nn/modules/activation.py", line 290, in forward
+    return torch.sigmoid(input)
+RuntimeError: CUDA out of memory. Tried to allocate 368.00 MiB (GPU 0; 7.80 GiB total capacity; 6.68 GiB already allocated; 79.88 MiB free; 6.77 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+

@@ -1,0 +1,21 @@
+INFO  | 06/28/2022 01:38:53 PM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Projects/GRAN_social/data/FACEBOOK/log_exp_17713.txt
+INFO  | 06/28/2022 01:38:53 PM | File run_exp.py           | Line 27    | Exp instance id = 17713
+INFO  | 06/28/2022 01:38:53 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/28/2022 01:38:53 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/28/2022 01:38:57 PM | File gran_runner.py       | Line 135   | Train/val/test = 640/160/160
+INFO  | 06/28/2022 01:38:57 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 33.46367918622637
+ERROR | 06/28/2022 01:38:57 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/home/alex/Projects/GRAN_social/run_exp.py", line 42, in main
+    runner.generate()
+  File "/home/alex/Projects/GRAN_social/runner/gran_runner.py", line 455, in generate
+    load_model(model, model_file, self.device)
+  File "/home/alex/Projects/GRAN_social/utils/train_helper.py", line 48, in load_model
+    model_snapshot = torch.load(file_name, map_location=device)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/serialization.py", line 699, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/torch/serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '/home/alex/Projects/GRAN_social/data/FACEBOOK/model_snapshot_0010000.pth'
+

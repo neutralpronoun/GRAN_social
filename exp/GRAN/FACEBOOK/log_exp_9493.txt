@@ -1,0 +1,36 @@
+INFO  | 06/28/2022 02:16:35 PM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Projects/GRAN_social/exp/GRAN/FACEBOOK/log_exp_9493.txt
+INFO  | 06/28/2022 02:16:35 PM | File run_exp.py           | Line 27    | Exp instance id = 9493
+INFO  | 06/28/2022 02:16:35 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/28/2022 02:16:35 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/28/2022 02:16:38 PM | File gran_runner.py       | Line 135   | Train/val/test = 640/160/160
+INFO  | 06/28/2022 02:16:39 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 33.46367918622637
+INFO  | 06/28/2022 02:16:45 PM | File gran_runner.py       | Line 488   | Average test time per mini-batch = 1.6866610844930012
+ERROR | 06/28/2022 02:18:12 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/home/alex/Projects/GRAN_social/run_exp.py", line 42, in main
+    runner.generate()
+  File "/home/alex/Projects/GRAN_social/runner/gran_runner.py", line 565, in generate
+    mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_diffusion_dev, mmd_radius_dev = evaluate(
+  File "/home/alex/Projects/GRAN_social/runner/gran_runner.py", line 82, in evaluate
+    mmd_spectral = spectral_stats(graph_gt, graph_pred)
+  File "/home/alex/Projects/GRAN_social/utils/eval_helper.py", line 429, in spectral_stats
+    for spectral_density in executor.map(spectral_worker, graph_ref_list):
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/concurrent/futures/_base.py", line 609, in result_iterator
+    yield fs.pop().result()
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/alex/Projects/GRAN_social/utils/eval_helper.py", line 403, in spectral_worker
+    eigs = eigvalsh(nx.normalized_laplacian_matrix(G).todense())
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/networkx/utils/decorators.py", line 816, in func
+    return argmap._lazy_compile(__wrapper)(*args, **kwargs)
+  File "<class 'networkx.utils.decorators.argmap'> compilation 25", line 4, in argmap_normalized_laplacian_matrix_22
+    from pathlib import Path
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/networkx/linalg/laplacianmatrix.py", line 127, in normalized_laplacian_matrix
+    A = nx.to_scipy_sparse_array(G, nodelist=nodelist, weight=weight, format="csr")
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/networkx/convert_matrix.py", line 921, in to_scipy_sparse_array
+    A = sp.sparse.coo_array((d, (r, c)), shape=(nlen, nlen), dtype=dtype)
+AttributeError: module 'scipy.sparse' has no attribute 'coo_array'
+

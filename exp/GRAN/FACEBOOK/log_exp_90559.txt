@@ -1,0 +1,27 @@
+INFO  | 06/29/2022 01:35:56 PM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Projects/GRAN_social/exp/GRAN/FACEBOOK/log_exp_90559.txt
+INFO  | 06/29/2022 01:35:56 PM | File run_exp.py           | Line 27    | Exp instance id = 90559
+INFO  | 06/29/2022 01:35:56 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/29/2022 01:35:56 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/29/2022 01:36:00 PM | File gran_runner.py       | Line 135   | Train/val/test = 640/160/160
+INFO  | 06/29/2022 01:36:00 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 33.46367918622637
+INFO  | 06/29/2022 01:36:06 PM | File gran_runner.py       | Line 488   | Average test time per mini-batch = 1.8717820644378662
+ERROR | 06/29/2022 01:37:44 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/home/alex/Projects/GRAN_social/run_exp.py", line 42, in main
+    runner.generate()
+  File "/home/alex/Projects/GRAN_social/runner/gran_runner.py", line 565, in generate
+    mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_diffusion_dev, mmd_radius_dev = evaluate(
+  File "/home/alex/Projects/GRAN_social/runner/gran_runner.py", line 85, in evaluate
+    mmd_diffusion = diffusion_stats(graph_gt, graph_pred)
+  File "/home/alex/Projects/GRAN_social/utils/eval_helper.py", line 227, in diffusion_stats
+    mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv)
+  File "/home/alex/Projects/GRAN_social/utils/dist_helper.py", line 149, in compute_mmd
+    samples1 = [s1 / np.sum(s1) for s1 in samples1]
+  File "/home/alex/Projects/GRAN_social/utils/dist_helper.py", line 149, in <listcomp>
+    samples1 = [s1 / np.sum(s1) for s1 in samples1]
+  File "<__array_function__ internals>", line 180, in sum
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/numpy/core/fromnumeric.py", line 2296, in sum
+    return _wrapreduction(a, np.add, 'sum', axis, dtype, out, keepdims=keepdims,
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/numpy/core/fromnumeric.py", line 86, in _wrapreduction
+    return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+ValueError: operands could not be broadcast together with shapes (200,) (201,) 
+

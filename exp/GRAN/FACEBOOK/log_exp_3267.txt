@@ -1,0 +1,20 @@
+INFO  | 06/28/2022 02:13:58 PM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Projects/GRAN_social/exp/GRAN/FACEBOOK/log_exp_3267.txt
+INFO  | 06/28/2022 02:13:58 PM | File run_exp.py           | Line 27    | Exp instance id = 3267
+INFO  | 06/28/2022 02:13:58 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/28/2022 02:13:58 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/28/2022 02:14:02 PM | File gran_runner.py       | Line 135   | Train/val/test = 640/160/160
+INFO  | 06/28/2022 02:14:02 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 33.46367918622637
+INFO  | 06/28/2022 02:14:08 PM | File gran_runner.py       | Line 488   | Average test time per mini-batch = 1.747320334116618
+ERROR | 06/28/2022 02:14:09 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/home/alex/Projects/GRAN_social/run_exp.py", line 42, in main
+    runner.generate()
+  File "/home/alex/Projects/GRAN_social/runner/gran_runner.py", line 528, in generate
+    draw_graph_list_generated(vis_graphs, num_row, num_col, fname=save_name, layout='spring')
+  File "/home/alex/Projects/GRAN_social/utils/vis_helper.py", line 105, in draw_graph_list_generated
+    pos = nx.nx_pydot.graphviz_layout(G, prog="sfdp")
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/networkx/drawing/nx_pydot.py", line 263, in graphviz_layout
+    return pydot_layout(G=G, prog=prog, root=root)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/networkx/drawing/nx_pydot.py", line 304, in pydot_layout
+    import pydot
+ModuleNotFoundError: No module named 'pydot'
+

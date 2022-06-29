@@ -1,0 +1,37 @@
+INFO  | 06/28/2022 02:14:20 PM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Projects/GRAN_social/exp/GRAN/FACEBOOK/log_exp_3401.txt
+INFO  | 06/28/2022 02:14:20 PM | File run_exp.py           | Line 27    | Exp instance id = 3401
+INFO  | 06/28/2022 02:14:20 PM | File run_exp.py           | Line 28    | Exp comment = None
+INFO  | 06/28/2022 02:14:20 PM | File run_exp.py           | Line 29    | Config =
+INFO  | 06/28/2022 02:14:24 PM | File gran_runner.py       | Line 135   | Train/val/test = 640/160/160
+INFO  | 06/28/2022 02:14:25 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 33.46367918622637
+INFO  | 06/28/2022 02:14:30 PM | File gran_runner.py       | Line 488   | Average test time per mini-batch = 1.7195733388264973
+ERROR | 06/28/2022 02:14:31 PM | File run_exp.py           | Line 46    | Traceback (most recent call last):
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/pydot.py", line 1923, in create
+    stdout_data, stderr_data, process = call_graphviz(
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/pydot.py", line 132, in call_graphviz
+    process = subprocess.Popen(
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/subprocess.py", line 966, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/subprocess.py", line 1842, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'sfdp'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/alex/Projects/GRAN_social/run_exp.py", line 42, in main
+    runner.generate()
+  File "/home/alex/Projects/GRAN_social/runner/gran_runner.py", line 528, in generate
+    draw_graph_list_generated(vis_graphs, num_row, num_col, fname=save_name, layout='spring')
+  File "/home/alex/Projects/GRAN_social/utils/vis_helper.py", line 105, in draw_graph_list_generated
+    pos = nx.nx_pydot.graphviz_layout(G, prog="sfdp")
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/networkx/drawing/nx_pydot.py", line 263, in graphviz_layout
+    return pydot_layout(G=G, prog=prog, root=root)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/networkx/drawing/nx_pydot.py", line 312, in pydot_layout
+    D_bytes = P.create_dot(prog=prog)
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/pydot.py", line 1733, in new_method
+    return self.create(
+  File "/home/alex/anaconda3/envs/pytorch_graphs/lib/python3.10/site-packages/pydot.py", line 1933, in create
+    raise OSError(*args)
+FileNotFoundError: [Errno 2] "sfdp" not found in path.
+

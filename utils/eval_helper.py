@@ -182,7 +182,9 @@ def mean_duration(G, N_runs, T = 100, HM = 0.04, Gamma = 5, Nb_inf_init = 2):
 def duration_worker(G):
   G = get_largest_component(G)
 
-  return mean_duration(G, 10)
+  hist, _ = np.histogram(mean_duration(G, 20), bins = 200)
+
+  return hist
 
 def diffusion_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = True):
   ''' Compute the distance between the degree distributions of two unordered sets of graphs.
@@ -224,7 +226,7 @@ def diffusion_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIM
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
   print(f"diffusion: {sample_ref}")
-  mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
+  mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
 
   # mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
@@ -252,7 +254,8 @@ def radius_worker(G):
   # print(nx.is_connected(G))
   # print("\n")
   if nx.is_connected(G):
-    return get_paths(G)#nx.average_shortest_path_length(G)
+    path_hist, _ = np.histogram(get_paths(G), bins = 200)
+    return path_hist#nx.average_shortest_path_length(G)
 
 def get_largest_component(G):
   nodes = list([c for c in sorted(nx.connected_components(G), key=len, reverse=True)][0])
@@ -297,7 +300,7 @@ def radius_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME =
 
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
-  mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv, is_hist=False)
+  mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
 
   # mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)
