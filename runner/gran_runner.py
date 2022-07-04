@@ -202,7 +202,7 @@ class GranRunner(object):
           momentum=self.train_conf.momentum,
           weight_decay=self.train_conf.wd)
     elif self.train_conf.optimizer == 'Adam':
-      optimizer = optim.Adam(params, lr=self.train_conf.lr, weight_decay=self.train_conf.wd)
+      optimizer = optim.Adam(params, lr=self.train_conf.lr, weight_decay=self.train_conf.wd, capturable = True)
     else:
       raise ValueError("Non-supported optimizer!")
 

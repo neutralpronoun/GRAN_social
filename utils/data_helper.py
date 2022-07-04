@@ -94,6 +94,9 @@ def graph_load_batch(data_dir,
   G = nx.Graph()
   # load data
   path = os.path.join(data_dir, name.upper())
+
+  print(os.path.join(path, '{}_A.txt'.format(name)))
+
   data_adj = np.loadtxt(
       os.path.join(path, '{}_A.txt'.format(name)), delimiter=',').astype(int)
   if node_attributes:
@@ -227,8 +230,8 @@ def create_graphs(graph_type, data_dir='data', noise=10.0, seed=1234):
     print(data_dir)
     graphs = graph_load_batch(
         data_dir,
-        min_num_nodes=799,
-        max_num_nodes=801,
+        min_num_nodes=199,
+        max_num_nodes=201,
         name='FACEBOOK_LARGE',
         node_attributes=False,
         graph_labels=True)
