@@ -56,11 +56,11 @@ from utils.data_helper import *
 
 EPS = np.finfo(np.float32).eps
 
-__all__ = ['NodeFeatPredict']
+__all__ = ['NodeClassPredict']
 
 class DataPrep():
     def __init__(self, data_dir):
-        self.graphs = create_graphs("FACEBOOK_LARGE", data_dir)
+        self.graphs = create_graphs("TWITCH", data_dir)
         self.n_graphs = len(self.graphs)
         self.count = 0
 
@@ -106,7 +106,7 @@ class DataPrep():
         else:
             self.device = torch.device("cpu")
 
-        n_metrics = 4 #+ self.num_classes
+        n_metrics = 5 #+ self.num_classes
         x = np.zeros((self.num_nodes, n_metrics))
 
         for i, n in enumerate(list(self.graph1.nodes)):
@@ -137,10 +137,10 @@ class DataPrep():
         path_avg, path_std = self.get_paths(n)
         degree = self.graph1.degree[n]
         cluster = nx.clustering(self.graph1, n)
-        #community = self.node_community(n)
+        community = self.node_community(n)
         #class_props = self.prop_dict
 
-        return path_avg, path_std, degree, cluster#, community#, *class_props
+        return path_avg, path_std, degree, cluster, community#, *class_props
 
     def get_paths(self, n):
         paths = nx.single_source_shortest_path_length(self.graph1, n)
@@ -179,7 +179,6 @@ class DataPrep():
 
         return neighbourhood_matches / n_neighbors
 
-
 class NodeFeatPredict(torch.nn.Module):
     def __init__(self, hidden_channels, num_prop, dataset):
         super().__init__()
@@ -209,7 +208,36 @@ class NodeFeatPredict(torch.nn.Module):
         x = self.out_soft(x)
         return x
 
-class NodeFeatPredictLight(torch.nn.Module):
+class NodeClassPredict(torch.nn.Module):
+    def __init__(self, hidden_channels, num_prop, dataset):
+        super().__init__()
+        torch.manual_seed(12345678)
+        self.num_prop = num_prop
+
+        self.conv1 = GCNConv(dataset.num_features, hidden_channels)
+        self.conv2 = GCNConv(hidden_channels, dataset.num_classes)
+
+        self.conv_inter = GCNConv(hidden_channels, hidden_channels)
+
+        self.out_soft = nn.Softmax(dim  = 0)
+
+    def forward(self, x, edge_index):
+        x = self.conv1(x, edge_index)
+        # print(x)
+        # print(edge_index)
+        x = F.dropout(x, p = 0.25, training = self.training)
+
+        for i in range(self.num_prop):
+            x = self.conv_inter(x, edge_index)
+            # x = x.relu()
+            x = F.dropout(x, p=0.25, training=self.training)
+        x = x.relu()
+        x = self.conv2(x, edge_index)
+        # x = x.relu()
+        x = self.out_soft(x)
+        return x
+
+class NodeClassPredictLight(torch.nn.Module):
     def __init__(self, hidden_channels, num_prop, dataset):
         super().__init__()
         torch.manual_seed(12345678)
@@ -240,7 +268,7 @@ class NodeFeatPredictLight(torch.nn.Module):
         # x = self.out_soft(x)
         return x
 
-class NodeFeatPredictLinear(torch.nn.Module):
+class NodeClassPredictLinear(torch.nn.Module):
     def __init__(self, hidden_channels, num_prop, dataset):
         super().__init__()
         torch.manual_seed(12345678)
@@ -328,7 +356,9 @@ def diagnostic_plot(G, pred, true, show = True, index = 1):
     ax2.set_title("Predicted labels")
     ax3.set_title("Label distributions")
 
-    plt.savefig(f"graph_example_{index}.jpg")
+    ax3.legend(shadow = True)
+
+    plt.savefig(f"graph_example_{index}_class.jpg")
     if show:
         plt.show()
 
@@ -336,7 +366,7 @@ data = DataPrep('/home/alex/Projects/GRAN_social/data/')
 data.step()
 
 
-model = NodeFeatPredictLight(hidden_channels = 30, num_prop=0, dataset = data)
+model = NodeClassPredictLight(hidden_channels = 30, num_prop=0, dataset = data)
 print(model)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
@@ -350,7 +380,11 @@ model.to(device)
 
 def train():
 
-      criterion = torch.nn.CrossEntropyLoss(weight = torch.from_numpy(1 / np.array(data.prop_dict)).float())
+      try:
+        criterion = torch.nn.CrossEntropyLoss(weight = torch.from_numpy(1 / np.array(data.prop_dict)).float())
+      except:
+        pass
+      #
 
 
 
@@ -359,7 +393,7 @@ def train():
       model.train()
       optimizer.zero_grad()  # Clear gradients.
       out = model(data.x, data.edge_index)  # Perform a single forward pass.
-      # print(data.y)
+
       loss = criterion(out, data.y)  # Compute the loss solely based on the training nodes.
       loss.backward()  # Derive gradients.
       optimizer.step()  # Update parameters based on gradients.
@@ -377,7 +411,6 @@ def test():
 
           out = model(data.x, data.edge_index).cpu().detach().numpy()
           y = data.y.cpu().detach().numpy().tolist()
-          print(out)
 
           out = np.argmax(out, axis=1).tolist()  # Use the class with highest probability.#
 
@@ -386,8 +419,6 @@ def test():
 
           diagnostic_plot(data.graph1, out, data.y.cpu().detach().numpy(), show = False, index = i)
 
-      print(out)
-      print(data.y)
 
 
       acc = accuracy_score(all_y, all_out)
@@ -402,7 +433,7 @@ test_acc, f1 = test()
 print(f'Test Accuracy: {test_acc:.4f}')
 print(f'Test f1: {f1:.4f}')
 
-pbar = tqdm(range(1, 4000))
+pbar = tqdm(range(1, 400))
 for epoch in pbar:
     loss = train()
     pbar.set_description(f"{loss:.4f}")

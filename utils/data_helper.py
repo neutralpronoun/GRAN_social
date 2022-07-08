@@ -230,10 +230,24 @@ def create_graphs(graph_type, data_dir='data', noise=10.0, seed=1234):
     print(data_dir)
     graphs = graph_load_batch(
         data_dir,
-        min_num_nodes=199,
-        max_num_nodes=201,
+        min_num_nodes=399,
+        max_num_nodes=401,
         name='FACEBOOK_LARGE',
-        node_attributes=False,
+        node_attributes=True,
+        graph_labels=True)
+    # args.max_prev_node = 230
+    # print(graphs)
+    print(graphs[0])
+
+
+  elif graph_type == "TWITCH":
+    print(data_dir)
+    graphs = graph_load_batch(
+        data_dir,
+        min_num_nodes=399,
+        max_num_nodes=401,
+        name='TWITCH',
+        node_attributes=True,
         graph_labels=True)
     # args.max_prev_node = 230
     # print(graphs)
