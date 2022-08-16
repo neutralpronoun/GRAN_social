@@ -14,11 +14,13 @@ from datetime import datetime
 from scipy.linalg import eigvalsh
 from utils.dist_helper import compute_mmd, gaussian_emd, gaussian, emd, gaussian_tv
 import random
+from community import best_partition
 
 PRINT_TIME = False
 __all__ = [
     'clean_graphs', 'degree_stats', 'clustering_stats', 'orbit_stats_all', 'spectral_stats',
-    'eval_acc_lobster_graph', 'radius_stats', 'omega_stats', 'sigma_stats', 'diffusion_stats'
+    'eval_acc_lobster_graph', 'radius_stats', 'omega_stats', 'sigma_stats', 'diffusion_stats',
+    'community_stats'
 ]
 
 
@@ -56,6 +58,74 @@ def clean_graphs(graph_real, graph_pred, npr=None):
 
   return graph_real, pred_graph_new
 
+def num_communities(graph):
+  partition = best_partition(graph)
+  all_partition_names = [partition[i] for i in partition.keys()]
+  n_partitions = np.unique(all_partition_names).shape[0]
+
+  return n_partitions
+
+def community_worker(G, n_runs = 5):
+
+  n_parts_array = np.zeros(n_runs, dtype = np.int32)
+
+  for i in range(n_runs):
+    n_parts_array[i] = num_communities(G)
+
+
+  return n_parts_array
+
+
+def community_stats(graph_ref_list, graph_pred_list, is_parallel=True):
+  ''' Compute the distance between the degree distributions of two unordered sets of graphs.
+    Args:
+      graph_ref_list, graph_target_list: two lists of networkx graphs to be evaluated
+    '''
+  sample_ref = []
+  sample_pred = []
+  # in case an empty graph is generated
+  graph_pred_list_remove_empty = [
+    G for G in graph_pred_list if not G.number_of_nodes() == 0
+  ]
+
+  prev = datetime.now()
+  if is_parallel:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for n_coms in executor.map(community_worker, graph_ref_list):
+        sample_ref.append(n_coms)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      for n_coms in executor.map(community_worker, graph_pred_list_remove_empty):
+        sample_pred.append(n_coms)
+  #
+  #   # with concurrent.futures.ProcessPoolExecutor() as executor:
+  #   #   for deg_hist in executor.map(degree_worker, graph_ref_list):
+  #   #     sample_ref.append(deg_hist)
+  #   # with concurrent.futures.ProcessPoolExecutor() as executor:
+  #   #   for deg_hist in executor.map(degree_worker, graph_pred_list_remove_empty):
+  #   #     sample_pred.append(deg_hist)
+  # else:
+  #   for i in range(len(graph_ref_list)):
+  #     degree_temp = np.array(nx.degree_histogram(graph_ref_list[i]))
+  #     sample_ref.append(degree_temp)
+  #   for i in range(len(graph_pred_list_remove_empty)):
+  #     degree_temp = np.array(
+  #       nx.degree_histogram(graph_pred_list_remove_empty[i]))
+  #     sample_pred.append(degree_temp)
+  # # print(len(sample_ref), len(sample_pred))
+  #
+  # # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
+  # # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
+  # # print(f"degree: {sample_ref}")
+  # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv)
+  # # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
+  #
+  # elapsed = datetime.now() - prev
+  # if PRINT_TIME:
+  #   print('Time computing degree mmd: ', elapsed)
+
+  mmd_dist = compute_mmd([np.bincount(np.array(sample_ref).flatten())], [np.bincount(np.array(sample_pred).flatten())],
+                                       kernel=gaussian)
+  return mmd_dist
 
 def degree_worker(G):
   return np.array(nx.degree_histogram(G))
@@ -100,7 +170,7 @@ def degree_stats(graph_ref_list, graph_pred_list, is_parallel=True):
 
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
-  print(f"degree: {sample_ref}")
+  # print(f"degree: {sample_ref}")
   mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
 
@@ -175,8 +245,14 @@ def SIR_ENDPOINT(G,Nb_inf_init,Gamma,HM, T):
 
 def mean_duration(G, N_runs, T = 100, HM = 0.04, Gamma = 5, Nb_inf_init = 2):
     durations = np.zeros(N_runs)
+    failed = 0
     for i in range(N_runs):
-        durations[i] = SIR_ENDPOINT(G, Nb_inf_init, Gamma, HM, T)
+        try:
+          durations[i] = SIR_ENDPOINT(G, Nb_inf_init, Gamma, HM, T)
+        except:
+          failed += 1
+          pass
+    # print(f"failed {100*failed/N_runs}% of diffusion runs")
     return durations
 
 def duration_worker(G):
@@ -186,7 +262,8 @@ def duration_worker(G):
 
   return hist
 
-def diffusion_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIME = True):
+def diffusion_stats(graph_ref_list, graph_pred_list,
+                    is_parallel=True, PRINT_TIME = True):
   ''' Compute the distance between the degree distributions of two unordered sets of graphs.
     Args:
       graph_ref_list, graph_target_list: two lists of networkx graphs to be evaluated
@@ -225,8 +302,8 @@ def diffusion_stats(graph_ref_list, graph_pred_list, is_parallel=True, PRINT_TIM
 
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_emd)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=emd)
-  print(f"diffusion: {sample_ref}")
-  mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian_tv)
+  # print(f"diffusion: {sample_ref}")
+  mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
   # mmd_dist = compute_mmd(sample_ref, sample_pred, kernel=gaussian)
 
   # mmd_dist = np.mean(sample_ref) / np.mean(sample_pred)

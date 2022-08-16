@@ -1,6 +1,0 @@
-INFO  | 06/24/2022 03:55:10 PM | File run_exp.py           | Line 26    | Writing log file to /home/alex/Documents/Project_CDT/GRAN_social/exp/GRAN/FACEBOOK_LARGE/log_exp_4004850.txt
-INFO  | 06/24/2022 03:55:10 PM | File run_exp.py           | Line 27    | Exp instance id = 4004850
-INFO  | 06/24/2022 03:55:10 PM | File run_exp.py           | Line 28    | Exp comment = None
-INFO  | 06/24/2022 03:55:10 PM | File run_exp.py           | Line 29    | Config =
-INFO  | 06/24/2022 03:55:29 PM | File gran_runner.py       | Line 135   | Train/val/test = 160/40/40
-INFO  | 06/24/2022 03:55:32 PM | File gran_runner.py       | Line 148   | No Edges vs. Edges in training set = 89.22312601985614
