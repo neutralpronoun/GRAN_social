@@ -56,24 +56,25 @@ train:
 test:
   batch_size: 4
   num_workers: 6
-  num_test_gen: 4 # number of generated samples
+  num_test_gen: 40 # number of generated samples
   is_vis: true
   is_single_plot: true # visualize `num_vis` samples in a single image
   is_test_ER: false # test Erdos-Renyi baseline
-  num_vis: 12
-  vis_num_row: 4 # visualize `num_vis` samples in `vis_num_row` rows
+  num_vis: 9
+  vis_num_row: 3 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
   test_model_dir: /home/alex/Projects/GRAN_social/exp/GRAN/FACEBOOK
   test_model_name: model_snapshot_0010000.pth
 generate:
-  batch_size: 4
+  batch_size: 10
   num_workers: 12
-  num_test_gen: 40 # number of generated samples
+  num_test_gen: 100 # number of generated samples
   is_eval: true
+  is_eval_rmat: true
   is_vis: true
   is_single_plot: true # visualize `num_vis` samples in a single image
-  num_vis: 12
-  vis_num_row: 4 # visualize `num_vis` samples in `vis_num_row` rows
+  num_vis: 8
+  vis_num_row: 3 # visualize `num_vis` samples in `vis_num_row` rows
   better_vis: true
   test_model_dir: /home/alex/Projects/GRAN_social/exp/GRAN/FACEBOOK
   test_model_name: model_snapshot_0010000.pth

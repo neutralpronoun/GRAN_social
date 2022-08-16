@@ -1,4 +1,6 @@
 import os
+import random
+
 import networkit as nk
 from networkit.generators import RmatGenerator
 import networkx as nx
@@ -10,9 +12,9 @@ __all__ = ['learn_and_generate', 'save_graph_edgelist']
 
 def learn_and_generate(G):
 
-
+    nodes = sorted(list(G.nodes()))
     N = len(list(G.nodes()))
-    A = nx.to_numpy_array(G)
+    A = nx.to_numpy_array(G, nodelist=nodes)
     edge_total = np.sum(A)
 
     scale = np.around(log2(N), decimals = 0)
@@ -21,7 +23,7 @@ def learn_and_generate(G):
     # print(2**scale)
 
     to_remove = 2**scale - N
-
+    # print(f"Adjacency:\n{A}")
 
 
     edgefactor = (edge_total / 2)  / N
@@ -32,6 +34,10 @@ def learn_and_generate(G):
     top_right = np.sum(A[:halfN, halfN:]) / edge_total
     bottom_left = np.sum(A[halfN:, :halfN]) / edge_total
     bottom_right = np.sum(A[halfN:, halfN:]) / edge_total
+
+    # print(f"Probabilities:\n"
+    #       f"{top_left:.2f} {top_right:.2f}\n"
+    #       f"{bottom_left:.2f} {bottom_right:.2f}")
 
     generator = nk.generators.RmatGenerator(scale,
                                             edgefactor,

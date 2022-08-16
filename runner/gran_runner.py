@@ -8,6 +8,7 @@ import pickle
 from collections import defaultdict
 from tqdm import tqdm
 import concurrent.futures
+import random
 
 import torch
 import torch.nn as nn
@@ -24,6 +25,7 @@ from utils.logger import get_logger
 from utils.train_helper import data_to_gpu, snapshot, load_model, EarlyStopper
 from utils.data_helper import *
 from utils.eval_helper import *
+from utils.mean_helper import *
 from utils.gen_helper import *
 from utils.dist_helper import compute_mmd, gaussian_emd, gaussian, emd, gaussian_tv
 from utils.vis_helper import draw_graph_list, draw_graph_list_separate, draw_graph_list_generated
@@ -86,6 +88,25 @@ def evaluate(graph_gt, graph_pred, degree_only=True):
 
     
   return mmd_degree, mmd_clustering, mmd_4orbits, mmd_spectral, mmd_radius, mmd_diffusion #, sample_sigma, pre_sigma
+
+
+def evaluate_means(graph_gt, graph_pred, degree_only=True):
+    mean_degree = degree_mean(graph_gt, graph_pred)
+
+    if degree_only:
+        mean_4orbits = 0.0
+        mean_clustering = 0.0
+        mean_spectral = 0.0
+    else:
+        mean_radius = radius_mean(graph_gt, graph_pred)
+        mean_4orbits = orbit_mean_all(graph_gt, graph_pred)
+        mean_clustering = clustering_mean(graph_gt, graph_pred)
+        mean_spectral = spectral_mean(graph_gt, graph_pred)
+        # mean_omega = omega_mean(graph_gt, graph_pred)
+        # sample_sigma, pre_sigma = sigma_mean(graph_gt, graph_pred)
+        mean_diffusion = diffusion_mean(graph_gt, graph_pred)
+
+    return mean_degree, mean_clustering, mean_4orbits, mean_spectral, mean_radius, mean_diffusion  # , sample_sigma, pre_sigma
 
 
 class GranRunner(object):
@@ -470,7 +491,7 @@ class GranRunner(object):
     self.num_test_gen = self.config.generate.num_test_gen
     self.batch_size   = self.config.generate.batch_size
 
-    num_test_batch = int(np.ceil(self.num_test_gen / self.test_conf.batch_size))
+    num_test_batch = int(np.ceil(self.num_test_gen / self.batch_size))
 
     gen_run_time = []
     for ii in tqdm(range(num_test_batch)):
@@ -495,8 +516,19 @@ class GranRunner(object):
     save_graph_edgelist(graphs_gen, self.pred_dir)
     save_graph_edgelist(self.graphs_test[:n_gen], self.sample_dir)
 
-    rmat_graphs = [learn_and_generate(G) for G in self.graphs_test[:n_gen]]
-    save_graph_edgelist(rmat_graphs, self.rmat_dir)
+    if self.config.generate.is_eval_rmat:
+
+        rmat_graphs = []
+        for g in self.graphs_test[:n_gen]:
+            try:
+                gmat = learn_and_generate(g)
+                rmat_graphs.append(gmat)
+            except:
+                print("failed to fit graph")
+                pass
+
+        # rmat_graphs = [learn_and_generate(G) for G in self.graphs_test[:n_gen]]
+        save_graph_edgelist(rmat_graphs, self.rmat_dir)
 
 
 
@@ -510,7 +542,11 @@ class GranRunner(object):
         self.config.test.test_model_name[:-4], test_epoch, self.block_size, self.stride))
 
       # remove isolated nodes for better visulization
-      graphs_pred_vis = self.graphs_test[:num_col] + graphs_gen[:num_col] + rmat_graphs[:num_col]#[copy.deepcopy(gg) for gg in graphs_gen[:self.num_vis]]
+      if self.config.generate.is_eval_rmat:
+        graphs_pred_vis = self.graphs_test[:num_col] + graphs_gen[:num_col] + rmat_graphs[:num_col]#[copy.deepcopy(gg) for gg in graphs_gen[:self.num_vis]]
+      else:
+        graphs_pred_vis = self.graphs_test[:num_col] + graphs_gen[:num_col]
+
       graphs_pred_vis = [nx.Graph(gg) for gg in graphs_pred_vis]
 
       if self.better_vis:
@@ -546,33 +582,28 @@ class GranRunner(object):
           layout='spring')
     #
     if self.config.generate.is_eval:
-      # ### Evaluation
-      # if self.config.dataset.name in ['lobster']:
-      #   acc = eval_acc_lobster_graph(graphs_gen)
-      #   logger.info('Validity accuracy of generated graphs = {}'.format(acc))
 
       num_nodes_gen = [len(aa.nodes) for aa in graphs_gen]
 
       n_gen = len(graphs_gen)
-
-      # for g in graphs_gen:
-      #   print("\n","="*50)
-      #   print(learn_and_generate(g))
-      #   print("\n","="*50)
 
       # Compared with Validation Set
       num_nodes_dev = [len(gg.nodes) for gg in self.graphs_dev]  # shape B X 1
       mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_diffusion_dev, mmd_radius_dev = evaluate(
         self.graphs_dev[:n_gen], graphs_gen, degree_only=False)
       mmd_num_nodes_dev = compute_mmd([np.bincount(num_nodes_dev[:n_gen])], [np.bincount(num_nodes_gen)],
-                                      kernel=gaussian_emd)
+                                      kernel=gaussian)
+
+      mmd_num_coms_dev = community_stats(self.graphs_dev[:n_gen], graphs_gen)
 
       # Compared with Test Set
       num_nodes_test = [len(gg.nodes) for gg in self.graphs_test]  # shape B X 1
       mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test, mmd_diffusion_test, mmd_radius_test = evaluate(
         self.graphs_test[:n_gen], graphs_gen, degree_only=False)
       mmd_num_nodes_test = compute_mmd([np.bincount(num_nodes_test[:n_gen])], [np.bincount(num_nodes_gen)],
-                                       kernel=gaussian_emd)
+                                       kernel=gaussian)
+
+      mmd_num_coms_test = community_stats(self.graphs_test[:n_gen], graphs_gen)
 
       logger.info("\nValidation MMD scores of"
                   "\n#nodes        {}"
@@ -581,8 +612,9 @@ class GranRunner(object):
                   "\n4orbits       {}"
                   "\nspectral      {}"
                   "\nSIRV   r/s    {}"
-                  "\nradius r/s    {}".format(mmd_num_nodes_dev, mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev,
-                                              mmd_spectral_dev, mmd_diffusion_dev, mmd_radius_dev))
+                  "\nradius r/s    {}"
+                  "\ncommunity     {}".format(mmd_num_nodes_dev, mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev,
+                                              mmd_spectral_dev, mmd_diffusion_dev, mmd_radius_dev, mmd_num_coms_dev))
 
       logger.info("\nTest MMD scores of"
                   "\n#nodes       {}"
@@ -591,10 +623,58 @@ class GranRunner(object):
                   "\n4orbits      {}"
                   "\nspectral     {}"
                   "\nSIRV   r/s    {}"
-                  "\nradius r/s   {}".format(mmd_num_nodes_test, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test,
-                                             mmd_spectral_test, mmd_diffusion_test, mmd_radius_test))
+                  "\nradius r/s   {}"
+                  "\ncommunity     {}".format(mmd_num_nodes_test, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test,
+                                             mmd_spectral_test, mmd_diffusion_test, mmd_radius_test, mmd_num_coms_test))
 
-      # if self.config.dataset.name in ['lobster']:
-      #   return mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test, acc
-      # else:
+      # return mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test
+
+    if self.config.generate.is_eval_rmat:
+
+      print("Evaluating RMAT")
+
+      num_nodes_gen = [len(aa.nodes) for aa in rmat_graphs]
+
+      n_gen = len(rmat_graphs)
+
+      # Compared with Validation Set
+      num_nodes_dev = [len(gg.nodes) for gg in self.graphs_dev]  # shape B X 1
+      mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_diffusion_dev, mmd_radius_dev = evaluate(
+        self.graphs_dev[:n_gen], rmat_graphs, degree_only=False)
+      mmd_num_nodes_dev = compute_mmd([np.bincount(num_nodes_dev[:n_gen])], [np.bincount(num_nodes_gen)],
+                                      kernel=gaussian_emd)
+
+      mmd_num_coms_dev = community_stats(self.graphs_dev[:n_gen], rmat_graphs)
+
+      # Compared with Test Set
+      num_nodes_test = [len(gg.nodes) for gg in self.graphs_test]  # shape B X 1
+      mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test, mmd_diffusion_test, mmd_radius_test = evaluate(
+        self.graphs_test[:n_gen], rmat_graphs, degree_only=False)
+      mmd_num_nodes_test = compute_mmd([np.bincount(num_nodes_test[:n_gen])], [np.bincount(num_nodes_gen)],
+                                       kernel=gaussian_emd)
+
+      mmd_num_coms_test = community_stats(self.graphs_test[:n_gen], rmat_graphs)
+
+      logger.info("\nRMAT Validation MMD scores of"
+                  "\n#nodes        {}"
+                  "\ndegree        {}"
+                  "\nclustering    {}"
+                  "\n4orbits       {}"
+                  "\nspectral      {}"
+                  "\nSIRV   r/s    {}"
+                  "\nradius r/s    {}"
+                  "\ncommunity     {}".format(mmd_num_nodes_dev, mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev,
+                                              mmd_spectral_dev, mmd_diffusion_dev, mmd_radius_dev, mmd_num_coms_dev))
+
+      logger.info("\nRMAT Test MMD scores of"
+                  "\n#nodes       {}"
+                  "\ndegree       {}"
+                  "\nclustering   {}"
+                  "\n4orbits      {}"
+                  "\nspectral     {}"
+                  "\nSIRV   r/s    {}"
+                  "\nradius r/s   {}"
+                  "\ncommunity     {}".format(mmd_num_nodes_test, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test,
+                                             mmd_spectral_test, mmd_diffusion_test, mmd_radius_test, mmd_num_coms_test))
+
       return mmd_degree_dev, mmd_clustering_dev, mmd_4orbits_dev, mmd_spectral_dev, mmd_degree_test, mmd_clustering_test, mmd_4orbits_test, mmd_spectral_test
